@@ -1,4 +1,7 @@
+ #Dapper.Extension
 
+      //第一种开发模式：事物交由事物管理器执行
+      [TestMethod]
       public void TestMethod1()
       {
           //MVC项目启动时向容器注入Servce：Aop+Ioc
