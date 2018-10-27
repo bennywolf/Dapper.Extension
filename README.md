@@ -75,9 +75,11 @@
           //动态Lamuda查询+分页
           var param = new { Age="",Balnce=30};
           var query = new SqlExpression<T_MEMBER>();
+          //左括号
           query.Left();
           query.And(s=>s.Balance>30&&s.MeAge>20);
-          query.Left();
+          //右括号
+          query.Right();
           //当条件成立时执行
           query.AndThen(param.Age!=null,s=>s.MeAge==10);
           var total = 0;
