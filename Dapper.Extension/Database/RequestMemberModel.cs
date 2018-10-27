@@ -5,7 +5,7 @@ namespace Dapper.Extension.Model
 {
     /// <summary>
     /// BASE TABLE
-	/// 更新时间：2018-10-27 17:01:05
+	/// 更新时间：2018-10-27 21:53:48
     /// </summary>
 	public class RequestMemberModel : RequstModel
 	{
@@ -20,22 +20,22 @@ namespace Dapper.Extension.Model
         /// </summary>
         public string MeCode { get; set; }
         /// <summary>
-        /// 年龄
-        /// Type:int(11) IsNull:YES Default:0
+        /// 
+        /// Type:int(11) IsNull:YES Default:null
         /// </summary>
         public int? MeAge { get; set; }
         /// <summary>
-        /// 余额
-        /// Type:decimal(18,2) IsNull:YES Default:0.00
+        /// 
+        /// Type:decimal(10,0) IsNull:YES Default:null
         /// </summary>
         public decimal? Balance { get; set; }
         /// <summary>
         /// 
-        /// Type:text IsNull:YES Default:null
+        /// Type:varchar(50) IsNull:YES Default:null
         /// </summary>
         public string Comment { get; set; }
         /// <summary>
-        /// 创建时间
+        /// 
         /// Type:datetime IsNull:YES Default:null
         /// </summary>
         public DateTime? CreateTime { get; set; }

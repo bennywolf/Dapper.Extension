@@ -18,7 +18,7 @@ namespace Dapper.Extension
         /// <param name="invocation"></param>
         public void Intercept(IInvocation invocation)
         {
-            DbSession session = new DbSession();
+            DbSession session = null;
             try
             {
                 var target = invocation.InvocationTarget;
@@ -27,7 +27,7 @@ namespace Dapper.Extension
                 {
                     var dao = target as ISevice;
                     //事务传播行为，如果同一个Service则使用同一个事物
-                    session = dao.Session == null ? SessionFactory.GetSession(false) : dao.Session;
+                    session = dao.Session == null ? SessionFactory.GetSession(false) : null;
                     //注入事务
                     dao.Session = session;
                 }

@@ -27,7 +27,7 @@ namespace Dapper.Extension.Model
 {
     /// <summary>
     /// <#=table.TableComment#><#=table.TableType#>
-	/// 更新时间：2018-10-27 13:10:29
+	/// 更新时间：<#=DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")#>
     /// </summary>
     [Table("<#=table.TableName#>")]
 	public class <#=table.TableName.ToUpper()#>

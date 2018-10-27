@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapper.Extension", "Dapper.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "UnitTest\UnitTest.csproj", "{D27DE00D-AE87-411E-A7D2-021454A6391B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroWeb", "MicroWeb\MicroWeb.csproj", "{99CDC6E5-02A3-47FE-A107-2E140730E566}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{D27DE00D-AE87-411E-A7D2-021454A6391B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D27DE00D-AE87-411E-A7D2-021454A6391B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D27DE00D-AE87-411E-A7D2-021454A6391B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99CDC6E5-02A3-47FE-A107-2E140730E566}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99CDC6E5-02A3-47FE-A107-2E140730E566}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99CDC6E5-02A3-47FE-A107-2E140730E566}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99CDC6E5-02A3-47FE-A107-2E140730E566}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
