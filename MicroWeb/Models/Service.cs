@@ -11,6 +11,11 @@ namespace MicroWeb.Models
     {
         public DbSession Session { get ; set ; }
 
+        /// <summary>
+        /// virtual是会被事物管理器拦截的
+        /// virtual之间不能互相调用
+        /// </summary>
+        /// <param name="req"></param>
         public virtual void CreateOrder(RequestMemberModel req)
         {
             var entity = req.GetEntity();

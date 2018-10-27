@@ -26,6 +26,7 @@ namespace Dapper.Extension
             var name = "strmysql";
             ProviderName = ConfigurationManager.ConnectionStrings[name].ProviderName;
             ConnectionString = ConfigurationManager.ConnectionStrings[name].ConnectionString;
+            //ProviderFactory = DbProviderFactories.GetFactory(ProviderName);
         }
         /// <summary>
         /// 获取数据库连接
@@ -33,7 +34,7 @@ namespace Dapper.Extension
         /// <returns></returns>
         public static DbConnection GetConnection()
         {
-            var connection = new MySql.Data.MySqlClient.MySqlConnection();
+            var connection =  new MySql.Data.MySqlClient.MySqlConnection();//ProviderFactory.CreateConnection();
             connection.ConnectionString = ConnectionString;
             return connection;
         }
