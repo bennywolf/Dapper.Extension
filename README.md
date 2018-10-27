@@ -1,16 +1,4 @@
-using System;
-using System.Data;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Dapper;
-using Dapper.Extension.Model;
-using System.Linq;
-using Dapper.Extension;
-using System.Collections.Generic;
-using System.Diagnostics;
-
-namespace UnitTest
-{
-    [TestClass]
+ [TestClass]
     public class UnitTest1
     {
         //第一种开发模式：事物交由事物管理器执行
@@ -98,5 +86,3 @@ namespace UnitTest
             Debug.Write(session.Commands);
 
         }
-    }
-}
