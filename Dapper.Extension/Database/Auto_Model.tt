@@ -1,0 +1,47 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Xml" #>
+<#@ assembly name="System.Xml.Linq" #>
+<#@ assembly name="System.Data" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Web" #>
+
+
+
+
+<#@include file="$(SolutionDir)\Dapper.Extension\Database\FileManager.ttinclude"#>
+<#@include file="$(SolutionDir)\Dapper.Extension\Database\Database.ttinclude"#>
+<# 
+	var manager = Manager.Create(Host, GenerationEnvironment);
+	var tables = Database.Build("server=127.0.0.1;user id=root;password=1024;database=test;pooling=True;minpoolsize=1;maxpoolsize=10;connectiontimeout=180;");
+#>
+
+<#foreach(var table in tables){manager.StartNewFile(table.TableName.ToUpper()+".cs");#>
+using System;
+using Dapper.Extension;
+
+namespace Dapper.Extension.Model
+{
+    /// <summary>
+    /// <#=table.TableComment#><#=table.TableType#>
+	/// 更新时间：2018-10-27 13:10:29
+    /// </summary>
+    [Table("<#=table.TableName#>")]
+	public class <#=table.TableName.ToUpper()#>
+	{
+<#foreach(var column in table.Columns){#>
+        /// <summary>
+        /// <#=column.ColumnComment#>
+        /// Type:<#=column.ColumnType#> IsNull:<#=column.IsNullable#> Default:<#=column.ColumnDefault==null?"null":column.ColumnDefault#>
+        /// </summary>
+        [Column("<#=column.ColumnName#>",<#=string.IsNullOrEmpty(column.Extra)?"false":"true"#>)]
+        public <#=Utils.GetTypeName(column.DataType)#> <#=Utils.Pascal(column.ColumnName)#> { get; set; }
+<#}#>   
+	}
+}
+
+<#}#>
+<#manager.EndBlock();manager.Process(true);#>
