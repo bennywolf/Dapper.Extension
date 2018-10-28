@@ -1,5 +1,7 @@
  #Dapper.Extension
 
+      由于还有工作，没有作测试，但是不会有很严重的问题，而且源码很简单，可以自行修复
+      QQ：1448376744
       //第一种开发模式：事物交由事物管理器执行
       [TestMethod]
       public void TestMethod1()
