@@ -15,7 +15,9 @@ namespace Dapper.Extension
     public static class SessionFactory
     {
         public static string ConnectionString { get; set; }
+
         public static string ProviderName { get; set; }
+
         public static DbProviderFactory ProviderFactory { get; set; }
         /// <summary>
         /// 初始化会话工厂
@@ -43,10 +45,9 @@ namespace Dapper.Extension
         /// </summary>
         /// <param name="auto">是否自动提交</param>
         /// <returns></returns>
-        public static DbSession GetSession(bool auto)
+        public static ISession GetSession(bool auto)
         {
-            var connection = GetConnection();
-            var session = new DbSession(connection);
+            var session = new SessionProxy(new DbSession(GetConnection()));
             session.Open(auto);
             return session;
         }

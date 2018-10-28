@@ -11,7 +11,10 @@ namespace Dapper.Extension
     {
         public CommandType CommandType { get; set; }
         public string Command { get; set; }
-        public dynamic Params { get; set; }
+        public dynamic Param { get; set; }
         public DateTime Time { get; set; }
+        public long Watch { get; set; }
+        public string Method { get; set; }
+        public string Text { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace MicroWeb.Models
 {
     public class Service : ISevice
     {
-        public DbSession Session { get ; set ; }
+        public ISession Session { get ; set ; }
 
         /// <summary>
         /// virtual是会被事物管理器拦截的
@@ -19,7 +19,7 @@ namespace MicroWeb.Models
         public virtual void CreateOrder(RequestMemberModel req)
         {
             var entity = req.GetEntity();
-            Session.From<T_MEMBER>().Insert(entity);
+            var list = Session.From<T_MEMBER>().Select();
         }
     }
 

@@ -5,7 +5,7 @@ namespace Dapper.Extension.Model
 {
     /// <summary>
     /// BASE TABLE
-	/// 更新时间：2018-10-27 21:53:48
+	/// 更新时间：2018-10-28 14:58:16
     /// </summary>
     [Table("t_member")]
 	public class T_MEMBER
@@ -18,28 +18,22 @@ namespace Dapper.Extension.Model
         public int? Id { get; set; }
         /// <summary>
         /// 
-        /// Type:varchar(50) IsNull:YES Default:null
-        /// </summary>
-        [Column("ME_CODE",false)]
-        public string MeCode { get; set; }
-        /// <summary>
-        /// 
         /// Type:int(11) IsNull:YES Default:null
         /// </summary>
-        [Column("ME_AGE",false)]
-        public int? MeAge { get; set; }
-        /// <summary>
-        /// 
-        /// Type:decimal(10,0) IsNull:YES Default:null
-        /// </summary>
-        [Column("BALANCE",false)]
-        public decimal? Balance { get; set; }
+        [Column("AGE",false)]
+        public int? Age { get; set; }
         /// <summary>
         /// 
         /// Type:varchar(50) IsNull:YES Default:null
         /// </summary>
-        [Column("COMMENT",false)]
-        public string Comment { get; set; }
+        [Column("NAME",false)]
+        public string Name { get; set; }
+        /// <summary>
+        /// 
+        /// Type:varchar(225) IsNull:YES Default:null
+        /// </summary>
+        [Column("REMARK",false)]
+        public string Remark { get; set; }
         /// <summary>
         /// 
         /// Type:datetime IsNull:YES Default:null

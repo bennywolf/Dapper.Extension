@@ -1,28 +1,28 @@
 ﻿using Castle.DynamicProxy;
-using Dapper.Extension;
 using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
-using System.Linq;
-using System.Web;
 
 namespace Dapper.Extension
 {
+    /// <summary>
+    /// 事物拦截器
+    /// 
+    /// 事务传播行为：
+    ///     1.如果ISevice的实现类中的Session未初始化则将其初始化
+    ///     2.只有virtua方法会被拦截，virtual方法之间不能互相调用</summary>
     public class TransactionIntercept : IInterceptor
     {
         /// <summary>
-        /// 事物拦截器
-        /// 事务传播行为：如果ISevice的实现类中的Session未初始化则将其初始化
+        /// 事务拦截器AOP
         /// </summary>
         /// <param name="invocation"></param>
         public void Intercept(IInvocation invocation)
         {
-            DbSession session = null;
+            ISession session = null;
             try
             {
-                var target = invocation.InvocationTarget;
+                #region 注入会话事物
                 //如果目标对象实现了ISession接口则注入事物，自动提交回滚
+                var target = invocation.InvocationTarget;
                 if (target is ISevice)
                 {
                     var dao = target as ISevice;
@@ -31,11 +31,19 @@ namespace Dapper.Extension
                     //注入事务
                     dao.Session = session;
                 }
+                #endregion
+
+                #region 执行目标方法
                 invocation.Proceed();
+                #endregion
+
+                #region 提交事物
                 session.Commit();
+                #endregion
             }
             catch (Exception e)
             {
+                //回滚事物
                 if (session != null)
                 {
                     session.Rollback();
@@ -43,11 +51,13 @@ namespace Dapper.Extension
             }
             finally
             {
+                //关闭事物
                 if (session != null)
                 {
                     session.Close();
                 }
             }
         }
+        
     }
 }

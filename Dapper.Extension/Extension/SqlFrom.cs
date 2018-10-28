@@ -11,8 +11,8 @@ namespace Dapper.Extension
     public class SqlFrom<T> where T : class, new()
     {
         #region prop
-        private DbSession Session { get; set; }
-        public SqlFrom(DbSession session)
+        private ISession Session { get; set; }
+        public SqlFrom(ISession session)
         {
             Session = session;
         }
