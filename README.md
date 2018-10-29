@@ -90,7 +90,7 @@
           Debug.Write(session.Commands);
 
       }
-      
+      //多表，分组查询
        [TestMethod]
         public void TestMethod1()
         {
