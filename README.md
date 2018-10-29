@@ -104,7 +104,8 @@
                 .Having(s => s.SumAge < 40)
                 .AsSelect(s => s.SumAge, s => s.CrCode);
 
-            //select a.sid as id1,b.sid as id2 a.name as StudentName,b.name as SchoolName from student as a join school as b on a.sid=b.sid
+            //select a.sid as id1,b.sid as id2 a.name as StudentName,b.name as SchoolName 
+            //from student as a join school as b on a.sid=b.sid
             var list2 = session.From<StudentJonSchool>()
                .AsSelect(s => s.id1, s => s.id2, s => s.StudentName, s => s.SchoolName);
 
