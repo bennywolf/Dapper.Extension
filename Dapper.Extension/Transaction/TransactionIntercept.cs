@@ -48,6 +48,7 @@ namespace Dapper.Extension
                 {
                     session.Rollback();
                 }
+                throw e;
             }
             finally
             {
