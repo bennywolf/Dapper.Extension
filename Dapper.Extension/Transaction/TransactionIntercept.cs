@@ -38,7 +38,10 @@ namespace Dapper.Extension
                 #endregion
 
                 #region 提交事物
-                session.Commit();
+                if (session!=null)
+                {
+                    session.Commit();
+                }
                 #endregion
             }
             catch (Exception e)
@@ -48,6 +51,7 @@ namespace Dapper.Extension
                 {
                     session.Rollback();
                 }
+                throw e;
             }
             finally
             {
