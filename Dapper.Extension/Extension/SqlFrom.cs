@@ -32,6 +32,14 @@ namespace Dapper.Extension
             {
                 QuerySql.AppendFormat(" WHERE {0}", _where);
             }
+            if (_groupBy != null)
+            {
+                QuerySql.AppendFormat(" GROUP BY {0}", _groupBy);
+            }
+            if (_having != null)
+            {
+                QuerySql.AppendFormat(" HAVING {0}", _having);
+            }
             if (_orderBy != null)
             {
                 QuerySql.AppendFormat(" ORDER BY {0}", _orderBy);
@@ -57,7 +65,7 @@ namespace Dapper.Extension
         public List<T> Select(params Expression<Func<T, object>>[] express)
         {
             #region 构建字段列表
-            var columns = string.Join(",", ExpressionBuilder.GetMemberNames<T>(express));
+            var columns = string.Join(",", ExpressionBuilder.GetColumnNames<T>(express));
             #endregion
 
             #region 执行Dapper查询
@@ -66,10 +74,29 @@ namespace Dapper.Extension
 
             return data;
         }
-        public List<T> SkipPage(int index,int size,out int total)
+        /// <summary>
+        /// 将字段进行映射
+        /// </summary>
+        /// <param name="express"></param>
+        /// <returns></returns>
+        public List<T> AsSelect(params Expression<Func<T, object>>[] express)
+        {
+            #region 构建字段列表
+            var list = ExpressionBuilder.GetColumnNames<T>(express);
+
+            var columns = string.Join(",", ExpressionBuilder.GetColumnAsFields<T>(express));
+            #endregion
+
+            #region 执行Dapper查询
+            var data = Select(columns);
+            #endregion
+
+            return data;
+        }
+        public List<T> SkipPage(int index, int size, out int total)
         {
             total = Count();
-            Top(((total+size)/size)*(index-1), size);
+            Top(((total + size) / size) * (index - 1), size);
             var data = Select();
             return data;
         }
@@ -99,7 +126,7 @@ namespace Dapper.Extension
         {
 
             #region 构建字段列表
-            var columns = string.Join(",", ExpressionBuilder.GetMemberNames<T>(express));
+            var columns = string.Join(",", ExpressionBuilder.GetColumnNames<T>(express));
             #endregion
 
             #region 执行Dapper查询
@@ -153,7 +180,7 @@ namespace Dapper.Extension
         public int Insert(T entity)
         {
             #region 如果对象为null，则不做更新
-            if (entity==null)
+            if (entity == null)
             {
                 return 0;
             }
@@ -161,7 +188,7 @@ namespace Dapper.Extension
 
             #region 构建InsertSql
             var colums = DbMap.GetColumnNames<T>();
-            var fields = DbMap.GetFieldNames <T>();
+            var fields = DbMap.GetFieldNames<T>();
             InsertSql.AppendFormat("INSERT INTO {0} ({1}) VALUES ({2})", DbMap.GetTableName<T>(), string.Join(",", colums), string.Join(",", fields.Select(c => c = '@' + c).ToArray()));
             #endregion
 
@@ -174,7 +201,7 @@ namespace Dapper.Extension
         public int Insert(IEnumerable<T> entitys)
         {
             #region 如果对象为null，则不做更新
-            if (entitys == null||entitys.Count()==0)
+            if (entitys == null || entitys.Count() == 0)
             {
                 return 0;
             }
@@ -375,12 +402,8 @@ namespace Dapper.Extension
         /// <returns></returns>
         public SqlFrom<T> Where(SqlExpression<T> expression)
         {
-            var build = new ExpressionBuilder().Build<T>(expression.Build());
+            var build = new ExpressionBuilder().Build<T>(Params,expression.Build());
             _where = new StringBuilder(build.Expression);
-            foreach (var item in build.Params)
-            {
-                Params.Add(item.Key, item.Value);
-            }
             return this;
         }
         /// <summary>
@@ -392,12 +415,7 @@ namespace Dapper.Extension
         {
             var query = new SqlExpression<T>();
             query.And(expression);
-            var build = new ExpressionBuilder().Build<T>(query.Build());
-            _where = new StringBuilder(build.Expression);
-            foreach (var item in build.Params)
-            {
-                Params.Add(item.Key, item.Value);
-            }
+            Where(query);
             return this;
         }
         #endregion
@@ -425,10 +443,48 @@ namespace Dapper.Extension
         /// <returns></returns>
         public SqlFrom<T> Set(Expression<Func<T, object>> express, object value)
         {
-            Set(ExpressionBuilder.GetMemberName<T>(express.Body), value);
+            Set(ExpressionBuilder.GetColumnName<T>(express.Body), value);
             return this;
         }
         #endregion
+
+        #region Group By
+        private StringBuilder _groupBy = null;
+        public SqlFrom<T> GroupBy(params Expression<Func<T, object>>[] express)
+        {
+            if (_groupBy == null)
+            {
+                _groupBy = new StringBuilder();
+            }
+            var columns = string.Join(",", ExpressionBuilder.GetColumnNames<T>(express));
+            _groupBy.AppendFormat(" {0}", string.Join(",", columns));
+            return this;
+        }
+        private StringBuilder _having { get; set; }
+        /// <summary>
+        /// 分组筛选
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public SqlFrom<T> Having(SqlExpression<T> expression)
+        {
+            var build = new ExpressionBuilder().Build<T>(Params,expression.Build());
+            _having = new StringBuilder(build.Expression);
+            return this;
+        }
+        /// <summary>
+        /// 分组筛选
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public SqlFrom<T> Having(Expression<Func<T, bool>> expression)
+        {
+            var query = new SqlExpression<T>();
+            query.And(expression);
+            Having(query);
+            return this;
+        }
+        #endregion        
 
         #region OrderBy
         private StringBuilder _orderBy { get; set; }
@@ -439,7 +495,7 @@ namespace Dapper.Extension
         /// <returns></returns>
         public SqlFrom<T> Desc(Expression<Func<T, object>> orderBy)
         {
-            var name = ExpressionBuilder.GetMemberName<T>(orderBy.Body);
+            var name = ExpressionBuilder.GetColumnName<T>(orderBy.Body);
             OrderBy(string.Format("{0} DESC", name));
             return this;
         }
@@ -450,7 +506,7 @@ namespace Dapper.Extension
         /// <returns></returns>
         public SqlFrom<T> Asc(Expression<Func<T, object>> orderBy)
         {
-            var name = ExpressionBuilder.GetMemberName<T>(orderBy.Body);
+            var name = ExpressionBuilder.GetColumnName<T>(orderBy.Body);
             OrderBy(string.Format("{0} ASC", name));
             return this;
         }
@@ -474,7 +530,7 @@ namespace Dapper.Extension
         #region Top
         private string _top { get; set; }
         /// <summary>
-        /// 分页查询
+        /// Limit查询
         /// </summary>
         /// <param name="index"></param>
         /// <param name="size"></param>
@@ -482,6 +538,11 @@ namespace Dapper.Extension
         public SqlFrom<T> Top(int index, int size)
         {
             _top = string.Format("LIMIT {0},{1}", index, size);
+            return this;
+        }
+        public SqlFrom<T> Top(int size)
+        {
+            Top(0, size);
             return this;
         }
         #endregion

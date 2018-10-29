@@ -20,7 +20,6 @@ namespace Dapper.Extension
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         SqlFrom<T> From<T>() where T : class, new();
-
         /// <summary>
         /// 执行SQL语句并返会影响行数
         /// </summary>

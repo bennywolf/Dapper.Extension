@@ -22,7 +22,7 @@ namespace Dapper.Extension
         /// <summary>
         /// 表达式参数
         /// </summary>
-        public Dictionary<string, object> Params = new Dictionary<string, object>();
+        public Dictionary<string, object> Params { get; set; }
         /// <summary>
         /// 类型
         /// </summary>
@@ -40,7 +40,7 @@ namespace Dapper.Extension
         #region Method
         private void SetValue(object value)
         {
-            var key = string.Format("@{0}_{1}", _columns.Pop(), Params.Count);
+            var key = string.Format("@{0}_{1}", _columns.Pop().Replace("(", "_").Replace(")", ""), Params.Count);
             if (_operator == "Like" || _operator == "NotLike")
             {
                 value = "%" + value.ToString() + "%";
@@ -97,7 +97,7 @@ namespace Dapper.Extension
         {
             if (node.Expression != null && node.Expression.NodeType == ExpressionType.Parameter)
             {
-                SetName(GetMemberName(_type, node));
+                SetName(GetColumnName(_type, node));
             }
             else
             {
@@ -140,7 +140,7 @@ namespace Dapper.Extension
         /// <typeparam name="T"></typeparam>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static string GetMemberName(Type type,Expression expression)
+        public static string GetColumnName(Type type,Expression expression)
         {
             var name = string.Empty;
             if (expression is LambdaExpression)
@@ -167,9 +167,9 @@ namespace Dapper.Extension
         /// <typeparam name="T"></typeparam>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static string GetMemberName<T>(Expression expression)
+        public static string GetColumnName<T>(Expression expression)
         {
-            return GetMemberName(typeof(T), expression);
+            return GetColumnName(typeof(T), expression);
         }
         /// <summary>
         /// 获取字段名列表
@@ -177,12 +177,29 @@ namespace Dapper.Extension
         /// <typeparam name="T"></typeparam>
         /// <param name="express"></param>
         /// <returns></returns>
-        public static List<string> GetMemberNames<T>(Expression[] express)
+        public static List<string> GetColumnNames<T>(Expression[] express)
         {
             var list = new List<string>();
             foreach (var item in express)
             {
-                list.Add(GetMemberName<T>(item));
+                list.Add(GetColumnName<T>(item));
+            }
+            return list;
+        }
+        /// <summary>
+        /// 将字段名映射成属性名（字段名+AS 属性名)
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="express"></param>
+        /// <returns></returns>
+        public static List<string> GetColumnAsFields<T>(Expression[] express)
+        {
+            var list = new List<string>();
+            foreach (var item in express)
+            {
+                var column = GetColumnName<T>(item);
+                var field = DbMap.GetFieldName<T>(column);
+                list.Add(string.Format("{0} AS {1}", column, field));
             }
             return list;
         }
@@ -192,9 +209,10 @@ namespace Dapper.Extension
         /// <typeparam name="T"></typeparam>
         /// <param name="expressionList"></param>
         /// <returns></returns>
-        internal Builder Build<T>(List<SqlExpressionModel> expressionList)
+        internal Builder Build<T>(Dictionary<string,object> oldParams,List<SqlExpressionModel> expressionList)
         {
             _type = typeof(T);
+            Params = oldParams;
             foreach (var item in expressionList)
             {
                 if (!string.IsNullOrEmpty(item.Include))
@@ -621,6 +639,10 @@ namespace Dapper.Extension
         public static string[] GetFieldNames<T>()
         {
             return Cache(typeof(T)).Columns.Select(c => c.FieldName).ToArray();
+        }
+        public static string GetFieldName<T>(string columnName)
+        {
+            return Cache(typeof(T)).Columns.Find(c => c.ColumnName == columnName).FieldName;
         }
         /// <summary>
         /// 是否为标识列

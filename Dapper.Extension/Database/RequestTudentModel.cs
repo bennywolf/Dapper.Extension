@@ -4,10 +4,10 @@ using Dapper.Extension;
 namespace Dapper.Extension.Model
 {
     /// <summary>
-    /// BASE TABLE
-	/// 更新时间：2018-10-28 14:58:17
+    /// 学生表BASE TABLE
+	/// 更新时间：2018-10-29 12:01:24
     /// </summary>
-	public class RequestMemberModel : RequstModel
+	public class RequestTudentModel : RequstModel
 	{
         /// <summary>
         /// 
@@ -16,38 +16,32 @@ namespace Dapper.Extension.Model
         public int? Id { get; set; }
         /// <summary>
         /// 
-        /// Type:int(11) IsNull:YES Default:null
-        /// </summary>
-        public int? Age { get; set; }
-        /// <summary>
-        /// 
         /// Type:varchar(50) IsNull:YES Default:null
+        /// </summary>
+        public string CrCode { get; set; }
+        /// <summary>
+        /// 姓名
+        /// Type:varchar(225) IsNull:YES Default:null
         /// </summary>
         public string Name { get; set; }
         /// <summary>
-        /// 
-        /// Type:varchar(225) IsNull:YES Default:null
+        /// 年龄
+        /// Type:int(11) IsNull:YES Default:null
         /// </summary>
-        public string Remark { get; set; }
-        /// <summary>
-        /// 
-        /// Type:datetime IsNull:YES Default:null
-        /// </summary>
-        public DateTime? CreateTime { get; set; }
+        public int? Age { get; set; }
    
 		/// <summary>
         /// 将Mvc请求参数转换成Entity对象
         /// </summary>
         /// <returns></returns>
-		public T_MEMBER GetEntity()
+		public STUDENT GetEntity()
 		{
-			return new T_MEMBER()
+			return new STUDENT()
 			{
 				Id = this.Id,
-				Age = this.Age,
+				CrCode = this.CrCode,
 				Name = this.Name,
-				Remark = this.Remark,
-				CreateTime = this.CreateTime,
+				Age = this.Age,
  
 			};
 		}

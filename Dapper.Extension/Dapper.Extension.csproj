@@ -59,6 +59,18 @@
   <ItemGroup>
     <Compile Include="Attribute\ColumnAttribute.cs" />
     <Compile Include="Attribute\TableAttribute.cs" />
+    <Compile Include="Database\CLASS_ROOM.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestLassRoomModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestStudentModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestTudentModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Database\RequstModel.cs" />
     <Compile Include="Database\MVC_Model.cs">
       <AutoGen>True</AutoGen>
@@ -70,10 +82,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Auto_Model.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\RequestMemberModel.cs">
-      <DependentUpon>MVC_Model.tt</DependentUpon>
+    <Compile Include="Database\STUDENT.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\T_MEMBER.cs">
+    <Compile Include="Database\VSTUDENT.cs">
       <DependentUpon>Auto_Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Extension\SqlFrom.cs" />
