@@ -97,7 +97,8 @@
 
             var session = SessionFactory.GetSession(true);
             //CodeFirst
-            //select SUM(AGE) as SumAge,CR_CODE as CrCode from student where age>20 group by CR_CODE having SUM(AGE)<40
+            //select SUM(AGE) as SumAge,CR_CODE as CrCode 
+            //from student where age>20 group by CR_CODE having SUM(AGE)<40
             var list = session.From<Student>()
                 .Where(s => s.Age > 20)
                 .GroupBy(s => s.CrCode)
