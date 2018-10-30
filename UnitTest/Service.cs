@@ -12,6 +12,10 @@ namespace UnitTest
     {
         public ISession Session { get; set; }
 
+        public void create()
+        {
+            Session.From<STUDENT>().Insert(new STUDENT());
+        }
        
     }
 }
