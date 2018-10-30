@@ -59,33 +59,333 @@
   <ItemGroup>
     <Compile Include="Attribute\ColumnAttribute.cs" />
     <Compile Include="Attribute\TableAttribute.cs" />
-    <Compile Include="Database\CLASS_ROOM.cs">
-      <DependentUpon>Auto_Model.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\RequestLassRoomModel.cs">
-      <DependentUpon>MVC_Model.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\RequestStudentModel.cs">
-      <DependentUpon>MVC_Model.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\RequestTudentModel.cs">
-      <DependentUpon>MVC_Model.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\RequstModel.cs" />
-    <Compile Include="Database\MVC_Model.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MVC_Model.tt</DependentUpon>
-    </Compile>
     <Compile Include="Database\Auto_Model.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Auto_Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Database\MVC_Model.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestAdminuserModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestCircleCommentModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestCircleModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestConfigBannerModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestCouponModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestGame1DrawnMemberModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestGame1ForwardModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestGame1MemberModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestGame1Model.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestGame1PrizeModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestLabelModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestLabelrelationModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestMemberAddressModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestMemberBankModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestMemberCouponModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestMemberFinanceModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestMemberMessageModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestMemberModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestMemberProxyModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestMemberWithdrawModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestModuleModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestModulerelationModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestOrganizationModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestPrizeMemberModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestPrizeModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestProductCommentModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestProductHomeTypeModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestProductMemberModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestProductModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestProductOpenModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestProductSpecModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestProductTypeModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestProxyConvertModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestProxyModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestRegisterDayModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestRegisterMonthModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestRegisterYearModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestSalesDetailModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestSalesRule1Model.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestSalesRule2Model.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestScrollMessageModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestShareRuleModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestShopCarModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestShopDeliverModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestShopOrderAfterModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestShopOrderDetailModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestShopOrderModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestShopOrderSupplierModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestSupplierModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestSupplierPostageModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestTudentModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestVillageModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequstModel.cs" />
     <Compile Include="Database\STUDENT.cs">
       <DependentUpon>Auto_Model.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\VSTUDENT.cs">
+    <Compile Include="Database\T_ADMINUSER.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_CIRCLE.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_CIRCLE_COMMENT.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_CONFIG_BANNER.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_COUPON.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_GAME1.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_GAME1_DRAWN_MEMBER.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_GAME1_FORWARD.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_GAME1_MEMBER.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_GAME1_PRIZE.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_LABEL.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_LABELRELATION.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_MEMBER.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_MEMBER_ADDRESS.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_MEMBER_BANK.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_MEMBER_COUPON.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_MEMBER_FINANCE.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_MEMBER_MESSAGE.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_MEMBER_PROXY.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_MEMBER_WITHDRAW.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_MODULE.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_MODULERELATION.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_ORGANIZATION.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_PRIZE.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_PRIZE_MEMBER.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_PRODUCT.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_PRODUCT_COMMENT.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_PRODUCT_HOME_TYPE.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_PRODUCT_MEMBER.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_PRODUCT_OPEN.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_PRODUCT_SPEC.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_PRODUCT_TYPE.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_PROXY.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_PROXY_CONVERT.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_SALES_DETAIL.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_SALES_RULE1.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_SALES_RULE2.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_SCROLL_MESSAGE.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_SHARE_RULE.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_SHOP_CAR.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_SHOP_DELIVER.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_SHOP_ORDER.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_SHOP_ORDER_AFTER.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_SHOP_ORDER_DETAIL.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_SHOP_ORDER_SUPPLIER.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_SUPPLIER.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_SUPPLIER_POSTAGE.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\T_VILLAGE.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\V_ADMINUSER.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\V_ORGANIZATION.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\V_REGISTER_DAY.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\V_REGISTER_MONTH.cs">
+      <DependentUpon>Auto_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\V_REGISTER_YEAR.cs">
       <DependentUpon>Auto_Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Extension\SqlFrom.cs" />

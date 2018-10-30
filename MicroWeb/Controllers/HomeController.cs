@@ -11,10 +11,9 @@ namespace MicroWeb.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index(RequestMemberModel req)
+        public ActionResult Index()
         {
-            var service = ServiceContainer.Resolve<Service>();
-            service.CreateOrder(req);
+          
             return View();
         }
     }

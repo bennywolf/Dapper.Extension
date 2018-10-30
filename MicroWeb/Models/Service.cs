@@ -16,10 +16,10 @@ namespace MicroWeb.Models
         /// virtual之间不能互相调用
         /// </summary>
         /// <param name="req"></param>
-        public virtual void CreateOrder(RequestMemberModel req)
+        public virtual void CreateOrder( )
         {
-            var entity = req.GetEntity();
-            var list = Session.From<T_MEMBER>().Select();
+          
+            
         }
     }
 

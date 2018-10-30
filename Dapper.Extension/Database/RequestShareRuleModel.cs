@@ -4,10 +4,10 @@ using Dapper.Extension;
 namespace Dapper.Extension.Model
 {
     /// <summary>
-    /// BASE TABLE
+    /// 分享减免规则BASE TABLE
 	/// 更新时间：2018-10-30 17:20:52
     /// </summary>
-	public class RequestTudentModel : RequstModel
+	public class RequestShareRuleModel : RequstModel
 	{
         /// <summary>
         /// 
@@ -16,32 +16,32 @@ namespace Dapper.Extension.Model
         public int? Id { get; set; }
         /// <summary>
         /// 
+        /// Type:decimal(18,2) IsNull:YES Default:null
+        /// </summary>
+        public decimal? Amount { get; set; }
+        /// <summary>
+        /// 
+        /// Type:decimal(18,2) IsNull:YES Default:null
+        /// </summary>
+        public decimal? DisAmount { get; set; }
+        /// <summary>
+        /// 
         /// Type:varchar(225) IsNull:YES Default:null
         /// </summary>
-        public string Name { get; set; }
-        /// <summary>
-        /// 
-        /// Type:int(11) IsNull:YES Default:null
-        /// </summary>
-        public int? Age { get; set; }
-        /// <summary>
-        /// 
-        /// Type:datetime IsNull:YES Default:null
-        /// </summary>
-        public DateTime? CreateTime { get; set; }
+        public string Descript { get; set; }
    
 		/// <summary>
         /// 将Mvc请求参数转换成Entity对象
         /// </summary>
         /// <returns></returns>
-		public STUDENT GetEntity()
+		public T_SHARE_RULE GetEntity()
 		{
-			return new STUDENT()
+			return new T_SHARE_RULE()
 			{
 				Id = this.Id,
-				Name = this.Name,
-				Age = this.Age,
-				CreateTime = this.CreateTime,
+				Amount = this.Amount,
+				DisAmount = this.DisAmount,
+				Descript = this.Descript,
  
 			};
 		}
