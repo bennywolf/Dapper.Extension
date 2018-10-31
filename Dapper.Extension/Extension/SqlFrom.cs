@@ -255,9 +255,8 @@ namespace Dapper.Extension
             #endregion
 
             #region 构建UpdateSql
-            var colums = DbMap.GetColumnNames<T>();
-            var fields = DbMap.GetFieldNames<T>();
-            UpdateSql.AppendFormat("UPDATE {0} SET {1}", DbMap.GetTableName<T>(), string.Join(",", fields.Select(s => s + "=@" + s)));
+            var colums = DbMap.GetColumns<T>();
+            UpdateSql.AppendFormat("UPDATE {0} SET {1}", DbMap.GetTableName<T>(), string.Join(",", colums.Select(s=>s.ColumnName+" = @"+s.FieldName)));
             UpdateSql.AppendFormat(" WHERE {0}=@{0}", DbMap.GetIdentityFieldName<T>());
             #endregion
 
@@ -282,14 +281,13 @@ namespace Dapper.Extension
             #endregion
 
             #region 构建UpdateSql
-            var colums = DbMap.GetColumnNames<T>();
-            var fields = DbMap.GetFieldNames<T>();
-            UpdateSql.AppendFormat("UPDATE {0} SET {1}", DbMap.GetTableName<T>(), string.Join(",", fields.Select(s => s + "=@" + s)));
+            var colums = DbMap.GetColumns<T>();
+            UpdateSql.AppendFormat("UPDATE {0} SET {1}", DbMap.GetTableName<T>(), string.Join(",", colums.Select(s => s.ColumnName + " = @" + s.FieldName)));
             UpdateSql.AppendFormat(" WHERE {0}=@{0}", DbMap.GetIdentityFieldName<T>());
             #endregion
 
             #region 执行Dapper
-            var row = Session.Execute(UpdateSql.ToString(), entitys, CommandType.Text);
+            var row = Session.Execute(UpdateSql.ToString(), entitys.Select(s=>s), CommandType.Text);
             #endregion
 
             return row;

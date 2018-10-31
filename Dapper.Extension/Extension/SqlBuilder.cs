@@ -588,11 +588,14 @@ namespace Dapper.Extension
             }
             return Tables[type];
         }
-       
+
         #endregion
 
         #region Methods
-
+        public static List<DbTable.DbColumn> GetColumns<T>()
+        {
+            return Cache(typeof(T)).Columns;
+        }
         /// <summary>
         /// 获取表名
         /// </summary>

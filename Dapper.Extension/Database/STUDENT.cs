@@ -5,7 +5,7 @@ namespace Dapper.Extension.Model
 {
     /// <summary>
     /// 学生表BASE TABLE
-	/// 更新时间：2018-10-29 12:01:23
+	/// 更新时间：2018-10-31 10:21:43
     /// </summary>
     [Table("student")]
 	public class STUDENT
@@ -16,12 +16,6 @@ namespace Dapper.Extension.Model
         /// </summary>
         [Column("ID",true)]
         public int? Id { get; set; }
-        /// <summary>
-        /// 
-        /// Type:varchar(50) IsNull:YES Default:null
-        /// </summary>
-        [Column("CR_CODE",false)]
-        public string CrCode { get; set; }
         /// <summary>
         /// 姓名
         /// Type:varchar(225) IsNull:YES Default:null
@@ -34,6 +28,12 @@ namespace Dapper.Extension.Model
         /// </summary>
         [Column("AGE",false)]
         public int? Age { get; set; }
+        /// <summary>
+        /// 
+        /// Type:datetime IsNull:YES Default:null
+        /// </summary>
+        [Column("CREATE_TIME",false)]
+        public DateTime? CreateTime { get; set; }
    
 	}
 }
