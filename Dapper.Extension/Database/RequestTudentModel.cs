@@ -5,42 +5,52 @@ namespace Dapper.Extension.Model
 {
     /// <summary>
     /// BASE TABLE
-	/// 更新时间：2018-11-01 16:51:07
+	/// 更新时间：2018-11-01 16:53:09
     /// </summary>
-    [Table("student")]
-	public class STUDENT
+	public class RequestTudentModel : RequstModel
 	{
         /// <summary>
         /// 
         /// Type:int(11) IsNull:NO Default:null
         /// </summary>
-        [Column("ID",true)]
         public int? Id { get; set; }
         /// <summary>
         /// 
         /// Type:varchar(50) IsNull:YES Default:null
         /// </summary>
-        [Column("NAME",false)]
         public string Name { get; set; }
         /// <summary>
         /// 
         /// Type:int(11) IsNull:YES Default:null
         /// </summary>
-        [Column("AGE",false)]
         public int? Age { get; set; }
         /// <summary>
         /// 
         /// Type:datetime IsNull:YES Default:null
         /// </summary>
-        [Column("CREATE_TIME",false)]
         public DateTime? CreateTime { get; set; }
         /// <summary>
         /// 
         /// Type:varchar(100) IsNull:YES Default:null
         /// </summary>
-        [Column("VERSION",false)]
         public string Version { get; set; }
    
+		/// <summary>
+        /// 将Mvc请求参数转换成Entity对象
+        /// </summary>
+        /// <returns></returns>
+		public STUDENT GetEntity()
+		{
+			return new STUDENT()
+			{
+				Id = this.Id,
+				Name = this.Name,
+				Age = this.Age,
+				CreateTime = this.CreateTime,
+				Version = this.Version,
+ 
+			};
+		}
 	}
 }
 

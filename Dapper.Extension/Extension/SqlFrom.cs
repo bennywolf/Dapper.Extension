@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dapper.Extension.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -79,7 +80,7 @@ namespace Dapper.Extension
         /// </summary>
         /// <param name="express"></param>
         /// <returns></returns>
-        public List<T> AsSelect(params Expression<Func<T, object>>[] express)
+        public List<T> SelectMap(params Expression<Func<T, object>>[] express)
         {
             #region 构建字段列表
             var list = ExpressionBuilder.GetColumnNames<T>(express);
@@ -256,7 +257,7 @@ namespace Dapper.Extension
 
             #region 构建UpdateSql
             var colums = DbMap.GetColumns<T>();
-            UpdateSql.AppendFormat("UPDATE {0} SET {1}", DbMap.GetTableName<T>(), string.Join(",", colums.Select(s=>s.ColumnName+" = @"+s.FieldName)));
+            UpdateSql.AppendFormat("UPDATE {0} SET {1}", DbMap.GetTableName<T>(), string.Join(",", colums.Select(s => s.ColumnName + " = @" + s.FieldName)));
             UpdateSql.AppendFormat(" WHERE {0}=@{0}", DbMap.GetIdentityFieldName<T>());
             #endregion
 
@@ -264,6 +265,39 @@ namespace Dapper.Extension
             var row = Session.Execute(UpdateSql.ToString(), entity, CommandType.Text);
             #endregion
 
+            return row;
+        }
+        /// <summary>
+        /// 乐观锁更新指定实体
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public int UpdateLock(T entity)
+        {
+            #region 如果对象为null，则不做更新
+            if (entity == null)
+            {
+                return 0;
+            }
+            #endregion
+
+            #region 构建UpdateSql
+            var colums = DbMap.GetColumns<T>();
+            UpdateSql.AppendFormat("UPDATE {0} SET {1}", DbMap.GetTableName<T>(), string.Join(",", colums.FindAll(s => !s.ColumnName.Contains("VERSION")).Select(s => s.ColumnName + " = @" + s.FieldName)));
+            UpdateSql.AppendFormat(",VERSION='{0}'", Guid.NewGuid().ToString("N"));
+            UpdateSql.AppendFormat(" WHERE {0}=@{0} AND VERSION = @VERSION", DbMap.GetIdentityFieldName<T>());
+            #endregion
+
+            #region 执行Dapper
+            var row = Session.Execute(UpdateSql.ToString(), entity, CommandType.Text);
+            #endregion
+
+            #region 失败则回滚
+            if (row != 1)
+            {
+                throw new SessionException("乐观锁：数据版本不一致");
+            }
+            #endregion
             return row;
         }
         /// <summary>
@@ -287,10 +321,35 @@ namespace Dapper.Extension
             #endregion
 
             #region 执行Dapper
-            var row = Session.Execute(UpdateSql.ToString(), entitys.Select(s=>s), CommandType.Text);
+            var row = Session.Execute(UpdateSql.ToString(), entitys.Select(s => s), CommandType.Text);
             #endregion
 
             return row;
+        }
+        /// <summary>
+        /// 乐观锁
+        /// </summary>
+        /// <param name="entitys"></param>
+        /// <returns></returns>
+        public int UpdateLock(IEnumerable<T> entitys)
+        {
+            #region 如果对象为null，则不做更新
+            if (entitys == null || entitys.Count() == 0)
+            {
+                return 0;
+            }
+            #endregion
+
+            #region 循环更新
+            var rows = 0;
+            foreach (var item in entitys)
+            {
+               var row = UpdateLock(item);
+                rows += row;
+            }
+            #endregion
+
+            return rows;
         }
         /// <summary>
         /// 删除指定条件的数据
@@ -368,7 +427,7 @@ namespace Dapper.Extension
         /// <summary>
         /// 查询参数
         /// </summary>
-        public Dictionary<string, object> Params = new Dictionary<string, object>();
+        private Dictionary<string, object> Params = new Dictionary<string, object>();
         /// <summary>
         /// 查询SQL
         /// </summary>
@@ -376,19 +435,19 @@ namespace Dapper.Extension
         /// <summary>
         /// 插入SQL
         /// </summary>
-        public StringBuilder InsertSql = new StringBuilder();
+        private StringBuilder InsertSql = new StringBuilder();
         /// <summary>
         /// 删除SQL
         /// </summary>
-        public StringBuilder DeleteSql = new StringBuilder();
+        private StringBuilder DeleteSql = new StringBuilder();
         /// <summary>
         /// 更新SQL
         /// </summary>
-        public StringBuilder UpdateSql = new StringBuilder();
+        private StringBuilder UpdateSql = new StringBuilder();
         /// <summary>
         /// 分页SQL
         /// </summary>
-        public StringBuilder TopSql = new StringBuilder();
+        private StringBuilder TopSql = new StringBuilder();
         #endregion
 
         #region Where
@@ -400,7 +459,7 @@ namespace Dapper.Extension
         /// <returns></returns>
         public SqlFrom<T> Where(SqlExpression<T> expression)
         {
-            var build = new ExpressionBuilder().Build<T>(Params,expression.Build());
+            var build = new ExpressionBuilder().Build<T>(Params, expression.Build());
             _where = new StringBuilder(build.Expression);
             return this;
         }
@@ -466,7 +525,7 @@ namespace Dapper.Extension
         /// <returns></returns>
         public SqlFrom<T> Having(SqlExpression<T> expression)
         {
-            var build = new ExpressionBuilder().Build<T>(Params,expression.Build());
+            var build = new ExpressionBuilder().Build<T>(Params, expression.Build());
             _having = new StringBuilder(build.Expression);
             return this;
         }

@@ -18,7 +18,7 @@ namespace Dapper.Extension
 
         public static string ProviderName { get; set; }
 
-        public static DbProviderFactory ProviderFactory { get; set; }
+        private static DbProviderFactory ProviderFactory { get; set; }
         /// <summary>
         /// 初始化会话工厂
         /// </summary>
@@ -43,12 +43,19 @@ namespace Dapper.Extension
         /// <summary>
         /// 获取会话
         /// </summary>
-        /// <param name="auto">是否自动提交</param>
+        /// <param name="proxy">是否使用会话代理</param>
         /// <returns></returns>
-        public static ISession GetSession(bool auto)
+        public static ISession GetSession(bool proxy)
         {
-            var session = new SessionProxy(new DbSession(GetConnection()));
-            session.Open(auto);
+            ISession session = null;
+            if (proxy)
+            {
+                session = new SessionProxy(new DbSession(GetConnection()));
+            }
+            else
+            {
+                session = new DbSession(GetConnection());
+            }
             return session;
         }
     }

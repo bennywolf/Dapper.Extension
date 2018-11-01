@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Dapper.Extension
 {
     /// <summary>
-    /// 回话代理类
+    /// 事物会话代理类
     /// </summary>
     public class SessionProxy : ISession
     {

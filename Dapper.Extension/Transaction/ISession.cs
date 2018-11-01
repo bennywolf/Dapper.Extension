@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Dapper.Extension
 {
     /// <summary>
-    /// 会话接口
+    /// 事物会话接口
     /// </summary>
     public interface ISession
     {
@@ -63,7 +63,7 @@ namespace Dapper.Extension
     }
 
     /// <summary>
-    /// 会话状态
+    /// 事物会话状态
     /// </summary>
     public enum SessionState
     {

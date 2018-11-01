@@ -21,8 +21,8 @@ namespace Dapper.Extension.Model
         /// </summary>
         public int PageCount { get; set; }
         ///<summary>
-        /// 拍序
+        /// 拍序字符串
         ///</summary>
-        public int OrderString { get; set; }
+        public int OrderBy { get; set; }
     }
 }

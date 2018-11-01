@@ -59,6 +59,14 @@
   <ItemGroup>
     <Compile Include="Attribute\ColumnAttribute.cs" />
     <Compile Include="Attribute\TableAttribute.cs" />
+    <Compile Include="Database\MVC_Model.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\RequestTudentModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Database\RequstModel.cs" />
     <Compile Include="Database\Auto_Model.cs">
       <AutoGen>True</AutoGen>
@@ -68,6 +76,7 @@
     <Compile Include="Database\STUDENT.cs">
       <DependentUpon>Auto_Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Exceptions\SessionException.cs" />
     <Compile Include="Extension\SqlFrom.cs" />
     <Compile Include="Extension\SqlBuilder.cs" />
     <Compile Include="Container\ServiceContainer.cs" />

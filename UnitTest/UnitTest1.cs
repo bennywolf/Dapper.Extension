@@ -14,21 +14,12 @@ namespace UnitTest
         [TestMethod]
         public void TestMethod1()
         {
-
-            var session = SessionFactory.GetSession(false);
-            Stopwatch stop = new Stopwatch();
-            stop.Start();
+            var session = SessionFactory.GetSession(true);
             session.Open(false);
             var list = session.From<STUDENT>().Select();
-            foreach (var item in list)
-            {
-                item.CreateTime = DateTime.Now;
-                item.Name = "dapperaaa";
-            }
-            session.From<STUDENT>().Update(list);
+            session.From<STUDENT>().Delete(list);
             session.Commit();
-            stop.Stop();
-            Debug.WriteLine(stop.ElapsedMilliseconds);
+            Debug.WriteLine(111);
         }
 
     }

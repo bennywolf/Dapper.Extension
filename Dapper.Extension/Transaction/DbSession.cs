@@ -10,6 +10,9 @@ using Dapper.Extension;
 
 namespace Dapper.Extension
 {
+    /// <summary>
+    /// 事物会话基础对象
+    /// </summary>
     public class DbSession : ISession
     {
         #region Constructor
