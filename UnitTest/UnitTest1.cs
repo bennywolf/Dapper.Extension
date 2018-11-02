@@ -14,12 +14,26 @@ namespace UnitTest
         [TestMethod]
         public void TestMethod1()
         {
+
             var session = SessionFactory.GetSession(true);
-            session.Open(false);
-            var list = session.From<STUDENT>().Select();
-            session.From<STUDENT>().Delete(list);
-            session.Commit();
-            Debug.WriteLine(111);
+            session.Open(true);
+
+            var row = session.From<STUDENT>().Insert(new STUDENT() {
+                Age=25,
+                CreateTime=DateTime.Now,
+                Name="aaa",
+                Version="fsdfagg",
+            });
+
+            var entity = session.From<STUDENT>().Select();
+
+            row = session.From<STUDENT>().Delete(entity);
+
+            row = session.From<STUDENT>().Set(s=>s.Name,"setsetle").Where(s=>s.Name== "aaa").Update();
+
+            session.ToString();
+
+            
         }
 
     }

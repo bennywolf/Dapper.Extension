@@ -5,10 +5,10 @@ namespace Dapper.Extension.Model
 {
     /// <summary>
     /// BASE TABLE
-	/// 更新时间：2018-11-01 16:51:07
+	/// 更新时间：2018-11-02 11:26:09
     /// </summary>
     [Table("student")]
-	public class STUDENT
+	public class STUDENT : IModel
 	{
         /// <summary>
         /// 

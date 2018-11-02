@@ -12,49 +12,49 @@ namespace Dapper.Extension
     /// <summary>
     /// 数据库表达式构建
     /// </summary>
-    public class ExpressionBuilder : ExpressionVisitor
+    public class SqlVisitor : ExpressionVisitor
     {
         #region Prop
         /// <summary>
         /// 表达式字符串
         /// </summary>
-        public StringBuilder Expression = new StringBuilder();
+        private StringBuilder Expression = new StringBuilder();
         /// <summary>
         /// 表达式参数
         /// </summary>
-        public Dictionary<string, object> Params { get; set; }
+        private Dictionary<string, object> Params { get; set; }
         /// <summary>
         /// 类型
         /// </summary>
-        private Type _type { get; set; }
+        private Type ClassType { get; set; }
         /// <summary>
         /// 字段栈
         /// </summary>
-        private Stack<string> _columns = new Stack<string>();
+        private Stack<string> Names = new Stack<string>();
         /// <summary>
-        /// 运算符
+        /// 当前运算符
         /// </summary>
-        private string _operator;
+        private string CurrentOperator;
         #endregion
 
         #region Method
         private void SetValue(object value)
         {
-            var key = string.Format("@{0}_{1}", _columns.Pop().Replace("(", "_").Replace(")", ""), Params.Count);
-            if (_operator == "Like" || _operator == "NotLike")
+            var key = string.Format("@{0}_{1}", Names.Pop().Replace("(", "_").Replace(")", ""), Params.Count);
+            if (CurrentOperator == "Like" || CurrentOperator == "NotLike")
             {
                 value = "%" + value.ToString() + "%";
             }
             Expression.Append(key);
             Params.Add(key, value);
         }
-        private void SetName(string name)
+        private void SetName(string columnName,string memberName)
         {
-            _columns.Push(name);
-            Expression.Append(name);
+            Expression.Append(columnName);
+            Names.Push(memberName);
         }
         #endregion
-       
+
         #region Visiit
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
@@ -63,8 +63,8 @@ namespace Dapper.Extension
             {
                 Expression.Append("(");
                 Visit(node.Arguments[0]);
-                _operator = SqlOperator.GetOperator(node.Method.Name);
-                Expression.AppendFormat(" {0} ", _operator);
+                CurrentOperator = SqlOperator.GetOperator(node.Method.Name);
+                Expression.AppendFormat(" {0} ", CurrentOperator);
                 Visit(node.Arguments[1]);
                 Expression.Append(")");
             }
@@ -72,8 +72,8 @@ namespace Dapper.Extension
             {
                 Expression.Append("(");
                 Visit(node.Arguments[0]);
-                _operator = SqlOperator.GetOperator(node.Method.Name);
-                Expression.AppendFormat(" {0} ", _operator);
+                CurrentOperator = SqlOperator.GetOperator(node.Method.Name);
+                Expression.AppendFormat(" {0} ", CurrentOperator);
                 Expression.Append(")");
             }
             else
@@ -87,8 +87,8 @@ namespace Dapper.Extension
         {
             Expression.Append("(");
             Visit(node.Left);
-            _operator = SqlOperator.GetOperator(node.NodeType);
-            Expression.AppendFormat(" {0} ", _operator);
+            CurrentOperator = SqlOperator.GetOperator(node.NodeType);
+            Expression.AppendFormat(" {0} ", CurrentOperator);
             Visit(node.Right);
             Expression.Append(")");
             return node;
@@ -97,7 +97,7 @@ namespace Dapper.Extension
         {
             if (node.Expression != null && node.Expression.NodeType == ExpressionType.Parameter)
             {
-                SetName(GetColumnName(_type, node));
+                SetName(GetColumnName(ClassType, node),GetMemberName(node));
             }
             else
             {
@@ -140,7 +140,7 @@ namespace Dapper.Extension
         /// <typeparam name="T"></typeparam>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static string GetColumnName(Type type,Expression expression)
+        public static string GetColumnName(Type type, Expression expression)
         {
             var name = string.Empty;
             if (expression is LambdaExpression)
@@ -159,7 +159,34 @@ namespace Dapper.Extension
             {
                 throw new Exception("Not Cast MemberExpression");
             }
-            return DbMap.GetColumnName(type,name);
+            return TypeMapper.GetColumnName(type, name);
+        }
+        /// <summary>
+        /// 获取成员名称
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static string GetMemberName(Expression expression)
+        {
+            var name = string.Empty;
+            if (expression is LambdaExpression)
+            {
+                expression = (expression as LambdaExpression).Body;
+            }
+            if (expression is MemberExpression)
+            {
+                name = (expression as MemberExpression).Member.Name;
+            }
+            else if (expression is UnaryExpression)
+            {
+                name = ((expression as UnaryExpression).Operand as MemberExpression).Member.Name;
+            }
+            else
+            {
+                throw new Exception("Not Cast MemberExpression");
+            }
+            return name;
         }
         /// <summary>
         /// 获取字段名
@@ -198,7 +225,7 @@ namespace Dapper.Extension
             foreach (var item in express)
             {
                 var column = GetColumnName<T>(item);
-                var field = DbMap.GetFieldName<T>(column);
+                var field = TypeMapper.GetFieldName<T>(column);
                 list.Add(string.Format("{0} AS {1}", column, field));
             }
             return list;
@@ -209,9 +236,9 @@ namespace Dapper.Extension
         /// <typeparam name="T"></typeparam>
         /// <param name="expressionList"></param>
         /// <returns></returns>
-        internal Builder Build<T>(Dictionary<string,object> oldParams,List<SqlExpressionModel> expressionList)
+        internal SqlBuilder Build<T>(Dictionary<string, object> oldParams, List<SqlExpressionModel> expressionList)
         {
-            _type = typeof(T);
+            ClassType = typeof(T);
             Params = oldParams;
             foreach (var item in expressionList)
             {
@@ -220,13 +247,13 @@ namespace Dapper.Extension
                     Expression.Append(item.Include);
                     continue;
                 }
-                if (!item.Equals(expressionList.FindAll(f=>string.IsNullOrEmpty(f.Include)).First()))
+                if (!item.Equals(expressionList.FindAll(f => string.IsNullOrEmpty(f.Include)).First()))
                 {
-                    Expression.AppendFormat(" {0} ",SqlOperator.GetOperator(item.ExpressType));
+                    Expression.AppendFormat(" {0} ", SqlOperator.GetOperator(item.ExpressType));
                 }
                 Visit(item.Express);
             }
-            return new Builder()
+            return new SqlBuilder()
             {
                 Params = Params,
                 Expression = Expression.ToString(),
@@ -235,10 +262,10 @@ namespace Dapper.Extension
         #endregion
 
         #region Class
-        public class Builder
+        public class SqlBuilder
         {
             public string Expression { get; set; }
-            public Dictionary<string,object> Params { get; set; }
+            public Dictionary<string, object> Params { get; set; }
         }
         #endregion
     }
@@ -508,7 +535,7 @@ namespace Dapper.Extension
         {
             Expressions.Add(new SqlExpressionModel()
             {
-               Include="("
+                Include = "("
 
             });
             return this;
@@ -538,11 +565,11 @@ namespace Dapper.Extension
     }
     #endregion
 
-    #region 数据库映射
+    #region 数据库映射构建缓存
     /// <summary>
     /// 数据库映射
     /// </summary>
-    public static class DbMap
+    public static class TypeMapper
     {
         #region Cache
 
@@ -550,7 +577,7 @@ namespace Dapper.Extension
         /// 映射缓存
         /// </summary>
         static Dictionary<Type, DbTable> Tables = new Dictionary<Type, DbTable>();
-        
+
         /// <summary>
         /// 缓存策略
         /// </summary>
@@ -564,7 +591,7 @@ namespace Dapper.Extension
 
                 #region 如果存在类型注解则使用字段注解配置，否则使用属性名，并将第一个属性作为标识列
                 var tableAttrs = type.GetCustomAttributes(typeof(TableAttribute), false);
-                table.TableName = tableAttrs!=null&& tableAttrs.Length>0?(tableAttrs[0] as TableAttribute).Name:type.Name;
+                table.TableName = tableAttrs != null && tableAttrs.Length > 0 ? (tableAttrs[0] as TableAttribute).Name : type.Name;
                 #endregion
 
                 #region 如果存在字段注解则使用字段注解配置，否则使用属性名，并将第一个属性作为标识列
@@ -621,7 +648,7 @@ namespace Dapper.Extension
         /// <param name="type"></param>
         /// <param name="fieldName"></param>
         /// <returns></returns>
-        public static string GetColumnName(Type type,string fieldName)
+        public static string GetColumnName(Type type, string fieldName)
         {
             return Cache(type).Columns.Find(f => f.FieldName == fieldName).ColumnName;
         }
@@ -670,17 +697,17 @@ namespace Dapper.Extension
 
         #region Model
         public class DbTable
-    {
-        public string TableName { get; set; }
-
-        public List<DbColumn> Columns = new List<DbColumn>();
-        public class DbColumn
         {
-            public string FieldName { get; set; }
-            public string ColumnName { get; set; }
-            public bool Identity { get; set; }
+            public string TableName { get; set; }
+
+            public List<DbColumn> Columns = new List<DbColumn>();
+            public class DbColumn
+            {
+                public string FieldName { get; set; }
+                public string ColumnName { get; set; }
+                public bool Identity { get; set; }
+            }
         }
-    }
         #endregion
     }
     #endregion

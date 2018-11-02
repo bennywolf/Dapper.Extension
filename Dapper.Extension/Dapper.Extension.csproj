@@ -46,9 +46,16 @@
     <Reference Include="MySql.Data, Version=6.9.12.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.6.9.12\lib\net45\MySql.Data.dll</HintPath>
     </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.5.10\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -59,15 +66,13 @@
   <ItemGroup>
     <Compile Include="Attribute\ColumnAttribute.cs" />
     <Compile Include="Attribute\TableAttribute.cs" />
+    <Compile Include="Database\Model\IModel.cs" />
     <Compile Include="Database\MVC_Model.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>MVC_Model.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\RequestTudentModel.cs">
-      <DependentUpon>MVC_Model.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\RequstModel.cs" />
+    <Compile Include="Database\Model\MVCModel.cs" />
     <Compile Include="Database\Auto_Model.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -76,10 +81,13 @@
     <Compile Include="Database\STUDENT.cs">
       <DependentUpon>Auto_Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Database\TudentModel.cs">
+      <DependentUpon>MVC_Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Exceptions\SessionException.cs" />
     <Compile Include="Extension\SqlFrom.cs" />
     <Compile Include="Extension\SqlBuilder.cs" />
-    <Compile Include="Container\ServiceContainer.cs" />
+    <Compile Include="Container\AppContainer.cs" />
     <Compile Include="Transaction\DbSession.cs" />
     <Compile Include="Transaction\ISession.cs" />
     <Compile Include="Transaction\ISevice.cs" />
@@ -91,8 +99,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Database\Database.ttinclude" />
-    <None Include="Database\FileManager.ttinclude" />
+    <None Include="Database\Helper\Database.ttinclude" />
+    <None Include="Database\Helper\FileManager.ttinclude" />
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

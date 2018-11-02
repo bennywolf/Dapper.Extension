@@ -1,5 +1,6 @@
 ﻿using Dapper.Extension;
 using Dapper.Extension.Model;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,6 @@ namespace UnitTest
     public class Service : ISevice
     {
         public ISession Session { get; set; }
-
-       
+        public ILogger Logger { get ; set ; }
     }
 }

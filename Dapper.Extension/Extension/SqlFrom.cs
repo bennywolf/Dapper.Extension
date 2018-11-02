@@ -28,7 +28,7 @@ namespace Dapper.Extension
         public List<T> Select(string columns = "*")
         {
             #region 构建QuerySql
-            QuerySql.AppendFormat("SELECT {0} FROM {1}", columns, DbMap.GetTableName<T>());
+            QuerySql.AppendFormat("SELECT {0} FROM {1}", columns, TypeMapper.GetTableName<T>());
             if (_where != null)
             {
                 QuerySql.AppendFormat(" WHERE {0}", _where);
@@ -66,7 +66,7 @@ namespace Dapper.Extension
         public List<T> Select(params Expression<Func<T, object>>[] express)
         {
             #region 构建字段列表
-            var columns = string.Join(",", ExpressionBuilder.GetColumnNames<T>(express));
+            var columns = string.Join(",", SqlVisitor.GetColumnNames<T>(express));
             #endregion
 
             #region 执行Dapper查询
@@ -83,9 +83,9 @@ namespace Dapper.Extension
         public List<T> SelectMap(params Expression<Func<T, object>>[] express)
         {
             #region 构建字段列表
-            var list = ExpressionBuilder.GetColumnNames<T>(express);
+            var list = SqlVisitor.GetColumnNames<T>(express);
 
-            var columns = string.Join(",", ExpressionBuilder.GetColumnAsFields<T>(express));
+            var columns = string.Join(",", SqlVisitor.GetColumnAsFields<T>(express));
             #endregion
 
             #region 执行Dapper查询
@@ -109,7 +109,7 @@ namespace Dapper.Extension
         public T Single(string columns = "*")
         {
             #region 构建QuerySql
-            Top(0, 1);
+            Top(1);
             #endregion
 
             #region 执行Dapper查询
@@ -127,7 +127,7 @@ namespace Dapper.Extension
         {
 
             #region 构建字段列表
-            var columns = string.Join(",", ExpressionBuilder.GetColumnNames<T>(express));
+            var columns = string.Join(",", SqlVisitor.GetColumnNames<T>(express));
             #endregion
 
             #region 执行Dapper查询
@@ -143,7 +143,7 @@ namespace Dapper.Extension
         public int Count()
         {
             #region 构建QuerySql
-            TopSql.AppendFormat("SELECT COUNT(*) FROM {0}", DbMap.GetTableName<T>());
+            TopSql.AppendFormat("SELECT COUNT(*) FROM {0}", TypeMapper.GetTableName<T>());
             if (_where != null)
             {
                 TopSql.AppendFormat(" WHERE {0}", _where);
@@ -188,9 +188,9 @@ namespace Dapper.Extension
             #endregion
 
             #region 构建InsertSql
-            var colums = DbMap.GetColumnNames<T>();
-            var fields = DbMap.GetFieldNames<T>();
-            InsertSql.AppendFormat("INSERT INTO {0} ({1}) VALUES ({2})", DbMap.GetTableName<T>(), string.Join(",", colums), string.Join(",", fields.Select(c => c = '@' + c).ToArray()));
+            var colums = TypeMapper.GetColumnNames<T>();
+            var fields = TypeMapper.GetFieldNames<T>();
+            InsertSql.AppendFormat("INSERT INTO {0} ({1}) VALUES ({2})", TypeMapper.GetTableName<T>(), string.Join(",", colums), string.Join(",", fields.Select(c => c = '@' + c).ToArray()));
             #endregion
 
             #region 执行Dapper
@@ -209,9 +209,9 @@ namespace Dapper.Extension
             #endregion
 
             #region 构建InsertSql
-            var colums = DbMap.GetColumnNames<T>();
-            var fields = DbMap.GetFieldNames<T>();
-            InsertSql.AppendFormat("INSERT INTO {0} ({1}) VALUES ({2})", DbMap.GetTableName<T>(), string.Join(",", colums), string.Join(",", fields.Select(c => c = '@' + c).ToArray()));
+            var colums = TypeMapper.GetColumnNames<T>();
+            var fields = TypeMapper.GetFieldNames<T>();
+            InsertSql.AppendFormat("INSERT INTO {0} ({1}) VALUES ({2})", TypeMapper.GetTableName<T>(), string.Join(",", colums), string.Join(",", fields.Select(c => c = '@' + c).ToArray()));
             #endregion
 
             #region 执行Dapper
@@ -227,7 +227,7 @@ namespace Dapper.Extension
         public int Update()
         {
             #region 构建UpdateSql
-            UpdateSql.AppendFormat("UPDATE {0}", DbMap.GetTableName<T>());
+            UpdateSql.AppendFormat("UPDATE {0}", TypeMapper.GetTableName<T>());
             UpdateSql.AppendFormat(" SET {0}", _set);
             if (_where != null)
             {
@@ -256,9 +256,9 @@ namespace Dapper.Extension
             #endregion
 
             #region 构建UpdateSql
-            var colums = DbMap.GetColumns<T>();
-            UpdateSql.AppendFormat("UPDATE {0} SET {1}", DbMap.GetTableName<T>(), string.Join(",", colums.Select(s => s.ColumnName + " = @" + s.FieldName)));
-            UpdateSql.AppendFormat(" WHERE {0}=@{0}", DbMap.GetIdentityFieldName<T>());
+            var colums = TypeMapper.GetColumns<T>();
+            UpdateSql.AppendFormat("UPDATE {0} SET {1}", TypeMapper.GetTableName<T>(), string.Join(",", colums.Select(s => s.ColumnName + " = @" + s.FieldName)));
+            UpdateSql.AppendFormat(" WHERE {0}=@{0}", TypeMapper.GetIdentityFieldName<T>());
             #endregion
 
             #region 执行Dapper
@@ -282,10 +282,10 @@ namespace Dapper.Extension
             #endregion
 
             #region 构建UpdateSql
-            var colums = DbMap.GetColumns<T>();
-            UpdateSql.AppendFormat("UPDATE {0} SET {1}", DbMap.GetTableName<T>(), string.Join(",", colums.FindAll(s => !s.ColumnName.Contains("VERSION")).Select(s => s.ColumnName + " = @" + s.FieldName)));
+            var colums = TypeMapper.GetColumns<T>();
+            UpdateSql.AppendFormat("UPDATE {0} SET {1}", TypeMapper.GetTableName<T>(), string.Join(",", colums.FindAll(s => !s.ColumnName.Contains("VERSION")).Select(s => s.ColumnName + " = @" + s.FieldName)));
             UpdateSql.AppendFormat(",VERSION='{0}'", Guid.NewGuid().ToString("N"));
-            UpdateSql.AppendFormat(" WHERE {0}=@{0} AND VERSION = @VERSION", DbMap.GetIdentityFieldName<T>());
+            UpdateSql.AppendFormat(" WHERE {0}=@{0} AND VERSION = @VERSION", TypeMapper.GetIdentityFieldName<T>());
             #endregion
 
             #region 执行Dapper
@@ -315,9 +315,9 @@ namespace Dapper.Extension
             #endregion
 
             #region 构建UpdateSql
-            var colums = DbMap.GetColumns<T>();
-            UpdateSql.AppendFormat("UPDATE {0} SET {1}", DbMap.GetTableName<T>(), string.Join(",", colums.Select(s => s.ColumnName + " = @" + s.FieldName)));
-            UpdateSql.AppendFormat(" WHERE {0}=@{0}", DbMap.GetIdentityFieldName<T>());
+            var colums = TypeMapper.GetColumns<T>();
+            UpdateSql.AppendFormat("UPDATE {0} SET {1}", TypeMapper.GetTableName<T>(), string.Join(",", colums.Select(s => s.ColumnName + " = @" + s.FieldName)));
+            UpdateSql.AppendFormat(" WHERE {0}=@{0}", TypeMapper.GetIdentityFieldName<T>());
             #endregion
 
             #region 执行Dapper
@@ -358,7 +358,7 @@ namespace Dapper.Extension
         public int Delete()
         {
             #region 构建DeleteSql
-            DeleteSql.AppendFormat("DELETE FROM {0}", DbMap.GetTableName<T>());
+            DeleteSql.AppendFormat("DELETE FROM {0}", TypeMapper.GetTableName<T>());
             if (_where != null)
             {
                 DeleteSql.AppendFormat(" WHERE {0}", _where);
@@ -386,8 +386,8 @@ namespace Dapper.Extension
             #endregion
 
             #region 构建DeleteSql
-            DeleteSql.AppendFormat("DELETE FROM {0}", DbMap.GetTableName<T>());
-            DeleteSql.AppendFormat(" WHERE {0}=@{0}", DbMap.GetIdentityFieldName<T>());
+            DeleteSql.AppendFormat("DELETE FROM {0}", TypeMapper.GetTableName<T>());
+            DeleteSql.AppendFormat(" WHERE {0}=@{0}", TypeMapper.GetIdentityFieldName<T>());
             #endregion
 
             #region 执行Dapper
@@ -411,8 +411,8 @@ namespace Dapper.Extension
             #endregion
 
             #region 构建DeleteSql
-            DeleteSql.AppendFormat("DELETE FROM {0}", DbMap.GetTableName<T>());
-            DeleteSql.AppendFormat(" WHERE {0}=@{0}", DbMap.GetIdentityFieldName<T>());
+            DeleteSql.AppendFormat("DELETE FROM {0}", TypeMapper.GetTableName<T>());
+            DeleteSql.AppendFormat(" WHERE {0}=@{0}", TypeMapper.GetIdentityFieldName<T>());
             #endregion
 
             #region 执行Dapper
@@ -459,7 +459,7 @@ namespace Dapper.Extension
         /// <returns></returns>
         public SqlFrom<T> Where(SqlExpression<T> expression)
         {
-            var build = new ExpressionBuilder().Build<T>(Params, expression.Build());
+            var build = new SqlVisitor().Build<T>(Params, expression.Build());
             _where = new StringBuilder(build.Expression);
             return this;
         }
@@ -500,7 +500,7 @@ namespace Dapper.Extension
         /// <returns></returns>
         public SqlFrom<T> Set(Expression<Func<T, object>> express, object value)
         {
-            Set(ExpressionBuilder.GetColumnName<T>(express.Body), value);
+            Set(SqlVisitor.GetColumnName<T>(express.Body), value);
             return this;
         }
         #endregion
@@ -513,7 +513,7 @@ namespace Dapper.Extension
             {
                 _groupBy = new StringBuilder();
             }
-            var columns = string.Join(",", ExpressionBuilder.GetColumnNames<T>(express));
+            var columns = string.Join(",", SqlVisitor.GetColumnNames<T>(express));
             _groupBy.AppendFormat(" {0}", string.Join(",", columns));
             return this;
         }
@@ -525,7 +525,7 @@ namespace Dapper.Extension
         /// <returns></returns>
         public SqlFrom<T> Having(SqlExpression<T> expression)
         {
-            var build = new ExpressionBuilder().Build<T>(Params, expression.Build());
+            var build = new SqlVisitor().Build<T>(Params, expression.Build());
             _having = new StringBuilder(build.Expression);
             return this;
         }
@@ -552,7 +552,7 @@ namespace Dapper.Extension
         /// <returns></returns>
         public SqlFrom<T> Desc(Expression<Func<T, object>> orderBy)
         {
-            var name = ExpressionBuilder.GetColumnName<T>(orderBy.Body);
+            var name = SqlVisitor.GetColumnName<T>(orderBy.Body);
             OrderBy(string.Format("{0} DESC", name));
             return this;
         }
@@ -563,7 +563,7 @@ namespace Dapper.Extension
         /// <returns></returns>
         public SqlFrom<T> Asc(Expression<Func<T, object>> orderBy)
         {
-            var name = ExpressionBuilder.GetColumnName<T>(orderBy.Body);
+            var name = SqlVisitor.GetColumnName<T>(orderBy.Body);
             OrderBy(string.Format("{0} ASC", name));
             return this;
         }

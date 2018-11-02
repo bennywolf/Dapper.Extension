@@ -5,9 +5,9 @@ namespace Dapper.Extension.Model
 {
     /// <summary>
     /// BASE TABLE
-	/// 更新时间：2018-11-01 16:53:09
+	/// 更新时间：2018-11-02 11:25:31
     /// </summary>
-	public class RequestTudentModel : RequstModel
+	public class TudentModel : MVCModel
 	{
         /// <summary>
         /// 
