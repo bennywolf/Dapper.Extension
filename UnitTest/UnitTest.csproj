@@ -59,6 +59,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Service.cs" />
@@ -69,6 +70,10 @@
     <ProjectReference Include="..\Dapper.Extension\Dapper.Extension.csproj">
       <Project>{ba3af78d-9091-4ebc-a15e-51fd283c6a72}</Project>
       <Name>Dapper.Extension</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utility.Library\Common.Library.csproj">
+      <Project>{1e04f494-db6f-41c0-b8d7-cf9f38d7731e}</Project>
+      <Name>Common.Library</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
