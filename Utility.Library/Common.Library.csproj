@@ -61,14 +61,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Convert\JsonUtil.cs" />
+    <Compile Include="Data\SecurityUtil.cs" />
+    <Compile Include="Data\RandUtil.cs" />
+    <Compile Include="Data\ConvertUtil.cs" />
     <Compile Include="File\ExcelUtil.cs" />
+    <Compile Include="File\QrCodeUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Web\HttpClient.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
