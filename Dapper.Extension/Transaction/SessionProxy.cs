@@ -33,11 +33,9 @@ namespace Dapper.Extension
             Commands.Add(new DbCommand()
             {
                 Command = sql,
-                CommandType = text,
-                Method = "Execute",
                 Param = param,
                 Time = DateTime.Now,
-                Text="执行数据库操纵命令",
+                Text = "执行数据库操纵命令",
                 Watch = watch.ElapsedMilliseconds
             });
             return row;
@@ -52,11 +50,9 @@ namespace Dapper.Extension
             Commands.Add(new DbCommand()
             {
                 Command = sql,
-                CommandType = text,
-                Method = "Query",
                 Param = param,
                 Time = DateTime.Now,
-                Text="执行数据库查询命令",
+                Text = "执行数据库查询命令",
                 Watch = watch.ElapsedMilliseconds
             });
             return list;
@@ -122,5 +118,29 @@ namespace Dapper.Extension
                 Text = "关闭回话"
             });
         }
+
+        public override string ToString()
+        {
+            var builder = new StringBuilder();
+            builder.AppendFormat("=========================== {0} ===========================\n", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            foreach (var item in Commands)
+            {
+                builder.AppendFormat("说明:{0}\n", item.Text);
+                builder.AppendFormat("时间:{0}\n", item.Time.ToString("yyyy-MM-dd HH:mm:ss"));
+                builder.AppendFormat("耗时:{0}\n", item.Watch);
+                if (!string.IsNullOrEmpty(item.ParamToString()))
+                {
+                    builder.AppendFormat("\n{0}", item.ParamToString());
+                }
+                if (!string.IsNullOrEmpty(item.Command))
+                {
+                    builder.AppendFormat("{0};\n", item.Command);
+                }
+                builder.Append("\n");
+            }
+            return builder.ToString();
+        }
+
+
     }
 }

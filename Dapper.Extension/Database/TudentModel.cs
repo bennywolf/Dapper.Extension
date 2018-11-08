@@ -5,9 +5,9 @@ namespace Dapper.Extension.Model
 {
     /// <summary>
     /// BASE TABLE
-	/// 更新时间：2018-11-01 16:53:09
+	/// 更新时间：2018-11-06 15:41:07
     /// </summary>
-	public class RequestTudentModel : RequstModel
+	public class TudentModel : MVCModel
 	{
         /// <summary>
         /// 
@@ -24,6 +24,11 @@ namespace Dapper.Extension.Model
         /// Type:int(11) IsNull:YES Default:null
         /// </summary>
         public int? Age { get; set; }
+        /// <summary>
+        /// 
+        /// Type:int(11) IsNull:YES Default:null
+        /// </summary>
+        public int? MinAge { get; set; }
         /// <summary>
         /// 
         /// Type:datetime IsNull:YES Default:null
@@ -46,6 +51,7 @@ namespace Dapper.Extension.Model
 				Id = this.Id,
 				Name = this.Name,
 				Age = this.Age,
+				MinAge = this.MinAge,
 				CreateTime = this.CreateTime,
 				Version = this.Version,
  

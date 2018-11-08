@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Dapper.Extension.Model
 {
-    public class RequstModel
+    /// <summary>
+    /// 所有MVCModel的基类，用于扩展MVCModel的公共属性
+    /// </summary>
+    public class MVCModel: IModel
     {
         /// <summary>
         /// 页码

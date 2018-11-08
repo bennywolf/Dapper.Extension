@@ -5,10 +5,10 @@ namespace Dapper.Extension.Model
 {
     /// <summary>
     /// BASE TABLE
-	/// 更新时间：2018-11-01 16:51:07
+	/// 更新时间：2018-11-06 15:41:06
     /// </summary>
     [Table("student")]
-	public class STUDENT
+	public class STUDENT : IModel
 	{
         /// <summary>
         /// 
@@ -28,6 +28,12 @@ namespace Dapper.Extension.Model
         /// </summary>
         [Column("AGE",false)]
         public int? Age { get; set; }
+        /// <summary>
+        /// 
+        /// Type:int(11) IsNull:YES Default:null
+        /// </summary>
+        [Column("MIN_AGE",false)]
+        public int? MinAge { get; set; }
         /// <summary>
         /// 
         /// Type:datetime IsNull:YES Default:null

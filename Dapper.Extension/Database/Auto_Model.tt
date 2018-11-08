@@ -12,8 +12,8 @@
 
 
 
-<#@include file="$(SolutionDir)\Dapper.Extension\Database\FileManager.ttinclude"#>
-<#@include file="$(SolutionDir)\Dapper.Extension\Database\Database.ttinclude"#>
+<#@include file="$(SolutionDir)\Dapper.Extension\Database\Helper\FileManager.ttinclude"#>
+<#@include file="$(SolutionDir)\Dapper.Extension\Database\Helper\Database.ttinclude"#>
 <# 
 	var manager = Manager.Create(Host, GenerationEnvironment);
 	var tables = Database.Build("server=127.0.0.1;user id=root;password=1024;database=test;pooling=True;minpoolsize=1;maxpoolsize=10;connectiontimeout=180;");
@@ -30,7 +30,7 @@ namespace Dapper.Extension.Model
 	/// 更新时间：<#=DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")#>
     /// </summary>
     [Table("<#=table.TableName#>")]
-	public class <#=table.TableName.ToUpper()#>
+	public class <#=table.TableName.ToUpper()#> : IModel
 	{
 <#foreach(var column in table.Columns){#>
         /// <summary>

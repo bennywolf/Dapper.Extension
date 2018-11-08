@@ -12,14 +12,14 @@
 
 
 
-<#@include file="$(SolutionDir)\Dapper.Extension\Database\FileManager.ttinclude"#>
-<#@include file="$(SolutionDir)\Dapper.Extension\Database\Database.ttinclude"#>
+<#@include file="$(SolutionDir)\Dapper.Extension\Database\Helper\FileManager.ttinclude"#>
+<#@include file="$(SolutionDir)\Dapper.Extension\Database\Helper\Database.ttinclude"#>
 <# 
 	var manager = Manager.Create(Host, GenerationEnvironment);
 	var tables = Database.Build("server=127.0.0.1;user id=root;password=1024;database=test;pooling=True;minpoolsize=1;maxpoolsize=10;connectiontimeout=180;");
 #>
 
-<#foreach(var table in tables){manager.StartNewFile("Request"+Utils.Pascal(table.TableName.Substring(1))+"Model.cs");#>
+<#foreach(var table in tables){manager.StartNewFile(Utils.Pascal(table.TableName.Substring(1))+"Model.cs");#>
 using System;
 using Dapper.Extension;
 
@@ -29,7 +29,7 @@ namespace Dapper.Extension.Model
     /// <#=table.TableComment#><#=table.TableType#>
 	/// 更新时间：<#=DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")#>
     /// </summary>
-	public class Request<#=Utils.Pascal(table.TableName.Substring(1))#>Model : RequstModel
+	public class <#=Utils.Pascal(table.TableName.Substring(1))#>Model : MVCModel
 	{
 <#foreach(var column in table.Columns){#>
         /// <summary>

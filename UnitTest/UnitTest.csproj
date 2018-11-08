@@ -53,9 +53,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MySql.Data.6.9.12\lib\net45\MySql.Data.dll</HintPath>
     </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.4.5.10\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Service.cs" />
@@ -67,9 +71,17 @@
       <Project>{ba3af78d-9091-4ebc-a15e-51fd283c6a72}</Project>
       <Name>Dapper.Extension</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Utility.Library\Common.Library.csproj">
+      <Project>{1e04f494-db6f-41c0-b8d7-cf9f38d7731e}</Project>
+      <Name>Common.Library</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="NLog.config" />
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
