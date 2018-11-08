@@ -9,7 +9,7 @@ namespace Dapper.Extension.Model
     /// <summary>
     /// 所有MVCModel的基类，用于扩展MVCModel的公共属性
     /// </summary>
-    public class MVCModel: IModel
+    public class MVCModel : IModel
     {
         /// <summary>
         /// 页码
@@ -24,10 +24,16 @@ namespace Dapper.Extension.Model
         /// </summary>
         public int PageCount { get; set; }
         ///<summary>
-        /// 拍序字符串
+        /// 排序序字符串
         ///</summary>
         public int OrderBy { get; set; }
-        public int QueryAll { get; internal set; }
-        public int TotalCount { get; internal set; }
+        /// <summary>
+        /// 是否查询所有:1是,0否
+        /// </summary>
+        public int QueryAll { get; set; }
+        /// <summary>
+        /// 总数量
+        /// </summary>
+        public int TotalCount { get; set; }
     }
 }
