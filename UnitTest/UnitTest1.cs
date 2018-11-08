@@ -14,12 +14,10 @@ namespace UnitTest
         [TestMethod]
         public void TestMethod1()
         {
-            var session = SessionFactory.GetSession(true);
-            session.Open(false);
-            var list = session.From<STUDENT>().Select();
-            session.From<STUDENT>().Delete(list);
-            session.Commit();
-            Debug.WriteLine(111);
+            while (true)
+            {
+                Console.WriteLine("aa");
+            }
         }
 
     }
