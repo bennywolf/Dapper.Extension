@@ -67,13 +67,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common.Library\Common.Library.csproj">
+      <Project>{1E04F494-DB6F-41C0-B8D7-CF9F38D7731E}</Project>
+      <Name>Common.Library</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Dapper.Extension\Dapper.Extension.csproj">
       <Project>{ba3af78d-9091-4ebc-a15e-51fd283c6a72}</Project>
       <Name>Dapper.Extension</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Utility.Library\Common.Library.csproj">
-      <Project>{1e04f494-db6f-41c0-b8d7-cf9f38d7731e}</Project>
-      <Name>Common.Library</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

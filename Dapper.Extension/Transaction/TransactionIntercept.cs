@@ -23,9 +23,9 @@ namespace Dapper.Extension
                 #region 注入会话事物
                 //如果目标对象实现了ISession接口则注入事物，自动提交回滚
                 var target = invocation.InvocationTarget;
-                if (target is ISevice)
+                if (target is SeviceBase)
                 {
-                    var dao = target as ISevice;
+                    var dao = target as SeviceBase;
                     //事务传播行为，如果同一个Service则使用同一个事物
                     session = dao.Session == null ? SessionFactory.GetSession(true) : null;
                     session.Open(false);

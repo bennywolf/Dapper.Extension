@@ -63,11 +63,22 @@ namespace Common.Library.Data
         /// 转化成byte数组
         /// </summary>
         /// <param name="str"></param>
-        /// <param name="encoder"></param>
+        /// <param name="encoding">默认是UTF-8</param>
         /// <returns></returns>
-        public static byte[] ToBytes(this string str, string encoder = "UTF-8")
+        public static byte[] ToBytes(this string str, string encoding = "UTF-8")
         {
-            return Encoding.GetEncoding(encoder).GetBytes(str);
+            return Encoding.GetEncoding(encoding).GetBytes(str);
+        }
+        /// <summary>
+        /// 将字符编码从一种转换成另一种
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="srcEncoding"></param>
+        /// <param name="dstEncoding"></param>
+        /// <returns></returns>
+        public static string EncodingConvert(this string str, string srcEncoding = "UTF-8", string dstEncoding = "GBK")
+        {
+            return Encoding.GetEncoding(dstEncoding).GetString(Encoding.Convert(Encoding.GetEncoding(srcEncoding), Encoding.GetEncoding(dstEncoding), Encoding.GetEncoding(srcEncoding).GetBytes(str)));
         }
         /// <summary>
         /// 转化成MD5-32bit字符串
@@ -94,6 +105,28 @@ namespace Common.Library.Data
         {
             return Convert.ToInt32(obj);
         }
+        #endregion
+
+        #region Date
+        /// <summary>
+        /// 转换成时间戳
+        /// </summary>
+        /// <param name="datetime"></param>
+        /// <returns></returns>
+        public static long ToTimestamp(this DateTime datetime)
+        {
+            return TimeUtil.ToTimestamp(datetime);
+        }
+        /// <summary>
+        /// 转换成时间
+        /// </summary>
+        /// <param name="timestamp"></param>
+        /// <returns></returns>
+        public static DateTime FromTimestamp(this long timestamp)
+        {
+            return TimeUtil.FromTimestamp(timestamp);
+        }
+             
         #endregion
 
     }

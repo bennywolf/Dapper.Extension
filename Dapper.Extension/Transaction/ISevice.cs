@@ -10,9 +10,9 @@ namespace Dapper.Extension
     /// <summary>
     /// 业务层顶级接口
     /// </summary>
-    public interface ISevice
+    public abstract class SeviceBase
     {
-        ISession Session { get; set; }
-        ILogger Logger { get; set; }
+        public ISession Session { get; set; }
+        public ILogger Logger { get; set; }
     }
 }

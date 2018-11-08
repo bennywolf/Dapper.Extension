@@ -7,7 +7,7 @@ using System.Web;
 
 namespace MicroWeb.Models
 {
-    public class Service : ISevice
+    public class Service : SeviceBase
     {
         public ISession Session { get ; set ; }
 

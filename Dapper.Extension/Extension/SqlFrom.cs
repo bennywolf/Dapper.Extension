@@ -1,4 +1,5 @@
 ﻿using Dapper.Extension.Exceptions;
+using Dapper.Extension.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -29,7 +30,7 @@ namespace Dapper.Extension
         {
             #region 构建QuerySql
             QuerySql.AppendFormat("SELECT {0} FROM {1}", columns, TypeMapper.GetTableName<T>());
-            if (_where != null)
+            if (_where != null&&_where.Length>0)
             {
                 QuerySql.AppendFormat(" WHERE {0}", _where);
             }
@@ -94,11 +95,38 @@ namespace Dapper.Extension
 
             return data;
         }
+        /// <summary>
+        /// 分页查询
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="size"></param>
+        /// <param name="total"></param>
+        /// <returns></returns>
         public List<T> SkipPage(int index, int size, out int total)
         {
             total = Count();
             Top(((total + size) / size) * (index - 1), size);
             var data = Select();
+            return data;
+        }
+        /// <summary>
+        /// 分页查询
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public List<T> SkipPage(MVCModel model)
+        {
+            var total = 0;
+            var data = new List<T>();
+            if (model.QueryAll == 1)
+            {
+                data = Select();
+            }
+            else
+            {
+                data = SkipPage(model.PageIndex, model.PageSize, out total);
+            }
+            model.TotalCount = total;
             return data;
         }
         /// <summary>
@@ -144,7 +172,7 @@ namespace Dapper.Extension
         {
             #region 构建QuerySql
             TopSql.AppendFormat("SELECT COUNT(*) FROM {0}", TypeMapper.GetTableName<T>());
-            if (_where != null)
+            if (_where != null&&_where.Length>0)
             {
                 TopSql.AppendFormat(" WHERE {0}", _where);
             }

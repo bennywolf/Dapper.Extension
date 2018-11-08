@@ -27,5 +27,7 @@ namespace Dapper.Extension.Model
         /// 拍序字符串
         ///</summary>
         public int OrderBy { get; set; }
+        public int QueryAll { get; internal set; }
+        public int TotalCount { get; internal set; }
     }
 }

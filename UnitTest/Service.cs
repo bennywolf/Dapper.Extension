@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace UnitTest
 {
-    public class Service : ISevice
+    public class Service : SeviceBase
     {
         public ISession Session { get; set; }
         public ILogger Logger { get ; set ; }
