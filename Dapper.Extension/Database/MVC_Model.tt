@@ -29,7 +29,7 @@ namespace Dapper.Extension.Model
     /// <#=table.TableComment#><#=table.TableType#>
 	/// 更新时间：<#=DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")#>
     /// </summary>
-	public class <#=Utils.Pascal(table.TableName.Substring(1))#>Model : MVCModel
+	public partial class <#=Utils.Pascal(table.TableName.Substring(1))#>Model : MVCModel
 	{
 <#foreach(var column in table.Columns){#>
         /// <summary>

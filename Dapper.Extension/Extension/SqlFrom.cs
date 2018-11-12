@@ -12,15 +12,22 @@ namespace Dapper.Extension
 {
     public class SqlFrom<T> where T : class, new()
     {
-        #region prop
-        private ISession Session { get; set; }
+        #region Construction      
+        /// <summary>
+        /// 创建一个SQL构造器
+        /// </summary>
+        /// <param name="session"></param>
         public SqlFrom(ISession session)
         {
             Session = session;
         }
         #endregion
 
-        #region DAO
+        #region DAO.NET
+        /// <summary>
+        /// 事务会话
+        /// </summary>
+        private ISession Session { get; set; }
         /// <summary>
         /// 查询数据
         /// </summary>
@@ -451,7 +458,7 @@ namespace Dapper.Extension
         }
         #endregion
 
-        #region SQL
+        #region Prop
         /// <summary>
         /// 查询参数
         /// </summary>
