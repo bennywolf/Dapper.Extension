@@ -18,7 +18,7 @@ namespace Dapper.Extension
         /// <summary>
         /// 表达式字符串
         /// </summary>
-        private StringBuilder Expression = new StringBuilder();
+        private StringBuilder SqlExpression = new StringBuilder();
         /// <summary>
         /// 表达式参数
         /// </summary>
@@ -41,67 +41,111 @@ namespace Dapper.Extension
         private void SetValue(object value)
         {
             var key = string.Format("@{0}_{1}", Names.Pop().Replace("(", "_").Replace(")", ""), Params.Count);
-            if (CurrentOperator == "Like" || CurrentOperator == "NotLike")
+            if (CurrentOperator == "LIKE" || CurrentOperator == "NOT LIKE")
             {
                 value = "%" + value.ToString() + "%";
             }
-            Expression.Append(key);
+            SqlExpression.Append(key);
             Params.Add(key, value);
         }
-        private void SetName(string columnName,string memberName)
+        private void SetName(string columnName, string memberName)
         {
-            Expression.Append(columnName);
+            SqlExpression.Append(columnName);
             Names.Push(memberName);
+            if (CurrentOperator == "BETWEEN" || CurrentOperator == "NOT BETWEEN")
+            {
+                Names.Push(memberName + "_Min");
+                Names.Push(memberName + "_Max");
+            }
+        }
+        /// <summary>
+        /// 构建表达式
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expressionList"></param>
+        /// <returns></returns>
+        public SqlBuilder Build<T>(Dictionary<string, object> oldParams, List<SqlModel> expressionList)
+        {
+            ClassType = typeof(T);
+            Params = oldParams;
+            foreach (var item in expressionList)
+            {
+                if (!string.IsNullOrEmpty(item.Include))
+                {
+                    SqlExpression.Append(item.Include);
+                    continue;
+                }
+                if (!item.Equals(expressionList.FindAll(f => string.IsNullOrEmpty(f.Include)).First()))
+                {
+                    SqlExpression.AppendFormat(" {0} ", SqlOperator.GetOperator(item.ExpressType));
+                }
+                Visit(item.Express);
+            }
+            return new SqlBuilder()
+            {
+                Params = Params,
+                Expression = SqlExpression.ToString(),
+            };
         }
         #endregion
 
         #region Visiit
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
-
-            if (node.Arguments.Count == 2 && SqlOperator.Methods.Contains(node.Method.Name))
+            if (node.Arguments.Count == 3 && SqlOperator.Methods.Contains(node.Method.Name) && node.Method.Name.Contains("Between"))
             {
-                Expression.Append("(");
+                SqlExpression.Append("(");
+                CurrentOperator = SqlOperator.GetOperator(node.Method.Name);
+                Visit(node.Arguments[0]);
+                SqlExpression.AppendFormat(" {0} ", CurrentOperator);
+                Visit(node.Arguments[1]);
+                SqlExpression.AppendFormat(" AND ");
+                Visit(node.Arguments[2]);
+                SqlExpression.Append(")");
+            }
+            else if (node.Arguments.Count == 2 && SqlOperator.Methods.Contains(node.Method.Name))
+            {
+                SqlExpression.Append("(");
                 Visit(node.Arguments[0]);
                 CurrentOperator = SqlOperator.GetOperator(node.Method.Name);
-                Expression.AppendFormat(" {0} ", CurrentOperator);
+                SqlExpression.AppendFormat(" {0} ", CurrentOperator);
                 Visit(node.Arguments[1]);
-                Expression.Append(")");
+                SqlExpression.Append(")");
             }
             else if (node.Arguments.Count == 1 && SqlOperator.Methods.Contains(node.Method.Name))
             {
-                Expression.Append("(");
+                SqlExpression.Append("(");
                 Visit(node.Arguments[0]);
                 CurrentOperator = SqlOperator.GetOperator(node.Method.Name);
-                Expression.AppendFormat(" {0} ", CurrentOperator);
-                Expression.Append(")");
+                SqlExpression.AppendFormat(" {0} ", CurrentOperator);
+                SqlExpression.Append(")");
             }
             else
             {
-                var value = System.Linq.Expressions.Expression.Lambda(node).Compile().DynamicInvoke();
+                var value = Expression.Lambda(node).Compile().DynamicInvoke();
                 SetValue(value);
             }
             return node;
         }
         protected override Expression VisitBinary(BinaryExpression node)
         {
-            Expression.Append("(");
+            SqlExpression.Append("(");
             Visit(node.Left);
             CurrentOperator = SqlOperator.GetOperator(node.NodeType);
-            Expression.AppendFormat(" {0} ", CurrentOperator);
+            SqlExpression.AppendFormat(" {0} ", CurrentOperator);
             Visit(node.Right);
-            Expression.Append(")");
+            SqlExpression.Append(")");
             return node;
         }
         protected override Expression VisitMember(MemberExpression node)
         {
             if (node.Expression != null && node.Expression.NodeType == ExpressionType.Parameter)
             {
-                SetName(GetColumnName(ClassType, node),GetMemberName(node));
+                SetName(GetColumnName(ClassType, node), GetMemberName(node));
             }
             else
             {
-                var value = System.Linq.Expressions.Expression.Lambda(node).Compile().DynamicInvoke();
+                var value = Expression.Lambda(node).Compile().DynamicInvoke();
                 SetValue(value);
             }
 
@@ -114,7 +158,7 @@ namespace Dapper.Extension
         }
         protected override Expression VisitNewArray(NewArrayExpression node)
         {
-            var value = System.Linq.Expressions.Expression.Lambda(node).Compile().DynamicInvoke();
+            var value = Expression.Lambda(node).Compile().DynamicInvoke();
             SetValue(value);
             return node;
         }
@@ -122,7 +166,7 @@ namespace Dapper.Extension
         {
             if (node.NodeType == ExpressionType.Not)
             {
-                Expression.Append(SqlOperator.GetOperator(node.NodeType));
+                SqlExpression.Append(SqlOperator.GetOperator(node.NodeType));
                 Visit(node.Operand);
             }
             else
@@ -230,35 +274,7 @@ namespace Dapper.Extension
             }
             return list;
         }
-        /// <summary>
-        /// 构建表达式
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="expressionList"></param>
-        /// <returns></returns>
-        internal SqlBuilder Build<T>(Dictionary<string, object> oldParams, List<SqlExpressionModel> expressionList)
-        {
-            ClassType = typeof(T);
-            Params = oldParams;
-            foreach (var item in expressionList)
-            {
-                if (!string.IsNullOrEmpty(item.Include))
-                {
-                    Expression.Append(item.Include);
-                    continue;
-                }
-                if (!item.Equals(expressionList.FindAll(f => string.IsNullOrEmpty(f.Include)).First()))
-                {
-                    Expression.AppendFormat(" {0} ", SqlOperator.GetOperator(item.ExpressType));
-                }
-                Visit(item.Express);
-            }
-            return new SqlBuilder()
-            {
-                Params = Params,
-                Expression = Expression.ToString(),
-            };
-        }
+      
         #endregion
 
         #region Class
@@ -343,11 +359,22 @@ namespace Dapper.Extension
         #endregion
 
         #region IsNull
-        public static bool IsNull(this ValueType param)
+        public static bool IsNull(this ValueType value)
         {
             return true;
         }
-        public static bool IsNotNull(this ValueType param)
+        public static bool IsNotNull(this ValueType value)
+        {
+            return true;
+        }
+        #endregion
+
+        #region Between
+        public static bool Between(this ValueType value, ValueType min, ValueType max)
+        {
+            return true;
+        }
+        public static bool NotBetween(this ValueType value, ValueType min, ValueType max)
         {
             return true;
         }
@@ -366,27 +393,27 @@ namespace Dapper.Extension
                     name = "NOT IN";
                     break;
                 case "Like":
-                    name = "Like";
+                    name = "LIKE";
                     break;
                 case "NotLike":
                     name = "NOT LIKE";
                     break;
-                case "Greater":
+                case "Gt":
                     name = ">";
                     break;
-                case "GreaterEqual":
+                case "Ge":
                     name = ">=";
                     break;
-                case "Less":
+                case "Lt":
                     name = "<";
                     break;
-                case "LessEqual":
+                case "Le":
                     name = "<=";
                     break;
-                case "NotEqual":
+                case "Ne":
                     name = "<>";
                     break;
-                case "Equal":
+                case "Eq":
                     name = "=";
                     break;
                 case "IsNull":
@@ -394,6 +421,12 @@ namespace Dapper.Extension
                     break;
                 case "IsNotNull":
                     name = "IS NOT NULL";
+                    break;
+                case "Between":
+                    name = "BETWEEN";
+                    break;
+                case "NotBetween":
+                    name = "NOT BETWEEN";
                     break;
                 default: throw new Exception("Undefined Identifier Exception");
             }
@@ -444,7 +477,7 @@ namespace Dapper.Extension
     /// <summary>
     /// 数据库表达式模型
     /// </summary>
-    public class SqlExpressionModel
+    public class SqlModel
     {
         public string Include { get; set; }
         public Expression Express { get; set; }
@@ -457,20 +490,20 @@ namespace Dapper.Extension
     /// 数据库表达式
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class SqlExpression<T> where T : class, new()
+    public class SqlQuery<T> where T : class, new()
     {
         /// <summary>
         /// 表达式列表
         /// </summary>
-        private List<SqlExpressionModel> Expressions = new List<SqlExpressionModel>();
+        private List<SqlModel> Expressions = new List<SqlModel>();
         /// <summary>
         /// And运算
         /// </summary>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public SqlExpression<T> And(Expression<Func<T, bool>> expression)
+        public SqlQuery<T> And(Expression<Func<T, bool>> expression)
         {
-            Expressions.Add(new SqlExpressionModel()
+            Expressions.Add(new SqlModel()
             {
                 ExpressType = ExpressionType.AndAlso,
                 Express = expression,
@@ -482,9 +515,9 @@ namespace Dapper.Extension
         /// </summary>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public SqlExpression<T> Or(Expression<Func<T, bool>> expression)
+        public SqlQuery<T> Or(Expression<Func<T, bool>> expression)
         {
-            Expressions.Add(new SqlExpressionModel()
+            Expressions.Add(new SqlModel()
             {
                 ExpressType = ExpressionType.OrElse,
                 Express = expression,
@@ -497,11 +530,11 @@ namespace Dapper.Extension
         /// <param name="condition"></param>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public SqlExpression<T> AndThen(bool condition, Expression<Func<T, bool>> expression)
+        public SqlQuery<T> AndThen(bool condition, Expression<Func<T, bool>> expression)
         {
             if (condition)
             {
-                Expressions.Add(new SqlExpressionModel()
+                Expressions.Add(new SqlModel()
                 {
                     ExpressType = ExpressionType.AndAlso,
                     Express = expression,
@@ -515,11 +548,11 @@ namespace Dapper.Extension
         /// <param name="condition"></param>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public SqlExpression<T> OrThen(bool condition, Expression<Func<T, bool>> expression)
+        public SqlQuery<T> OrThen(bool condition, Expression<Func<T, bool>> expression)
         {
             if (condition)
             {
-                Expressions.Add(new SqlExpressionModel()
+                Expressions.Add(new SqlModel()
                 {
                     ExpressType = ExpressionType.OrElse,
                     Express = expression,
@@ -531,9 +564,9 @@ namespace Dapper.Extension
         /// 左括号
         /// </summary>
         /// <returns></returns>
-        public SqlExpression<T> Left()
+        public SqlQuery<T> Left()
         {
-            Expressions.Add(new SqlExpressionModel()
+            Expressions.Add(new SqlModel()
             {
                 Include = "("
 
@@ -544,9 +577,9 @@ namespace Dapper.Extension
         /// 右括号
         /// </summary>
         /// <returns></returns>
-        public SqlExpression<T> Right()
+        public SqlQuery<T> Right()
         {
-            Expressions.Add(new SqlExpressionModel()
+            Expressions.Add(new SqlModel()
             {
                 Include = ")"
 
@@ -557,7 +590,7 @@ namespace Dapper.Extension
         /// 构建表达式
         /// </summary>
         /// <returns></returns>
-        public List<SqlExpressionModel> Build()
+        public List<SqlModel> Build()
         {
             return Expressions;
         }

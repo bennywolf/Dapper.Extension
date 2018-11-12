@@ -20,7 +20,8 @@ namespace UnitTest
         [TestMethod]
         public void TestMethod1()
         {
-
+            var session = SessionFactory.GetSession(true);
+            var student = session.From<STUDENT>().Where(s=>s.Id.Between(2,20)).Select();
         }
 
 

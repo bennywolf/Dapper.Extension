@@ -492,7 +492,7 @@ namespace Dapper.Extension
         /// </summary>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public SqlFrom<T> Where(SqlExpression<T> expression)
+        public SqlFrom<T> Where(SqlQuery<T> expression)
         {
             var build = new SqlVisitor().Build<T>(Params, expression.Build());
             _where = new StringBuilder(build.Expression);
@@ -505,7 +505,7 @@ namespace Dapper.Extension
         /// <returns></returns>
         public SqlFrom<T> Where(Expression<Func<T, bool>> expression)
         {
-            var query = new SqlExpression<T>();
+            var query = new SqlQuery<T>();
             query.And(expression);
             Where(query);
             return this;
@@ -558,7 +558,7 @@ namespace Dapper.Extension
         /// </summary>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public SqlFrom<T> Having(SqlExpression<T> expression)
+        public SqlFrom<T> Having(SqlQuery<T> expression)
         {
             var build = new SqlVisitor().Build<T>(Params, expression.Build());
             _having = new StringBuilder(build.Expression);
@@ -571,7 +571,7 @@ namespace Dapper.Extension
         /// <returns></returns>
         public SqlFrom<T> Having(Expression<Func<T, bool>> expression)
         {
-            var query = new SqlExpression<T>();
+            var query = new SqlQuery<T>();
             query.And(expression);
             Having(query);
             return this;
