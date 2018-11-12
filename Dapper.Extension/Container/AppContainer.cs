@@ -11,29 +11,31 @@ namespace Dapper.Extension
     public class AppContainer
     {
         public static IContainer Container { get; set; }
-        private static ContainerBuilder builder = new ContainerBuilder();
-        public static void Builder(Action<AppContainer> action)
+        /// <summary>
+        /// 注册服务到容器
+        /// </summary>
+        /// <param name="assembly">程序集完全限定命</param>
+        /// <returns></returns>
+        public static IContainer Builder(string assembly)
         {
-            action(new AppContainer());
+            ContainerBuilder builder = new ContainerBuilder();
+
             //注册拦截器
             builder.RegisterType<TransactionIntercept>()
-                .SingleInstance();
-            //注册日志
-            builder.Register(c=>LogManager.GetLogger("*"))
-                .As<ILogger>()
-                .SingleInstance();
-            Container = builder.Build();
+                    .WithProperty("Logger", LogManager.GetLogger("intercept"))
+                    .SingleInstance();
+
+            //注册组件服务
+            builder.RegisterAssemblyTypes(System.Reflection.Assembly.Load(assembly))
+                    .Where(t => t.BaseType == typeof(SeviceBase))
+                    .WithProperty("Logger", LogManager.GetLogger("service"))
+                    .InstancePerLifetimeScope()
+                    .InterceptedBy(typeof(TransactionIntercept))
+                    .EnableClassInterceptors();
+
+            return (Container = builder.Build());
         }
 
-        public void Register<T>()
-        {
-            //注册组件，并启用事物拦截器
-            builder.RegisterType<T>().AsSelf()
-              .PropertiesAutowired()
-              .InstancePerLifetimeScope()
-              .InterceptedBy(typeof(TransactionIntercept))
-              .EnableClassInterceptors();
-        }
         public static T Resolve<T>()
         {
             T instance = default(T);
@@ -43,6 +45,6 @@ namespace Dapper.Extension
             }
             return instance;
         }
-       
+
     }
 }
