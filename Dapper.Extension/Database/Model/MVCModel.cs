@@ -26,7 +26,7 @@ namespace Dapper.Extension.Model
         ///<summary>
         /// 排序序字符串
         ///</summary>
-        public int OrderBy { get; set; }
+        public string OrderBy { get; set; }
         /// <summary>
         /// 是否查询所有:1是,0否
         /// </summary>

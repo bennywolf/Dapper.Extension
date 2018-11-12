@@ -12,7 +12,13 @@ namespace Dapper.Extension
     /// </summary>
     public abstract class SeviceBase
     {
+        /// <summary>
+        /// 事务会话
+        /// </summary>
         public ISession Session { get; set; }
+        /// <summary>
+        /// 日志工具
+        /// </summary>
         public ILogger Logger { get; set; }
     }
 }

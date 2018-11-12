@@ -8,13 +8,14 @@ using System.Threading.Tasks;
 
 namespace Dapper.Extension
 {
+    
     #region 数据库表达式构建
     /// <summary>
     /// 数据库表达式构建
     /// </summary>
     public class SqlVisitor : ExpressionVisitor
     {
-        #region Prop
+        #region Props
         /// <summary>
         /// 表达式字符串
         /// </summary>
@@ -311,18 +312,42 @@ namespace Dapper.Extension
         #endregion
 
         #region In
+        /// <summary>
+        /// In查询
+        /// </summary>
+        /// <param name="param"></param>
+        /// <param name="array"></param>
+        /// <returns></returns>
         public static bool In(this ValueType param, IEnumerable array)
         {
             return true;
         }
+        /// <summary>
+        /// Not In查询
+        /// </summary>
+        /// <param name="param"></param>
+        /// <param name="array"></param>
+        /// <returns></returns>
         public static bool NotIn(this ValueType param, IEnumerable array)
         {
             return true;
         }
+        /// <summary>
+        /// In查询
+        /// </summary>
+        /// <param name="param"></param>
+        /// <param name="array"></param>
+        /// <returns></returns>
         public static bool In(this string param, IEnumerable array)
         {
             return true;
         }
+        /// <summary>
+        /// Not In查询
+        /// </summary>
+        /// <param name="param"></param>
+        /// <param name="array"></param>
+        /// <returns></returns>
         public static bool NotIn(this string param, IEnumerable array)
         {
             return true;
@@ -330,10 +355,22 @@ namespace Dapper.Extension
         #endregion
 
         #region Like
+        /// <summary>
+        /// Like查询
+        /// </summary>
+        /// <param name="param1"></param>
+        /// <param name="param2"></param>
+        /// <returns></returns>
         public static bool Like(this string param1, string param2)
         {
             return true;
         }
+        /// <summary>
+        /// Not Like查询
+        /// </summary>
+        /// <param name="param1"></param>
+        /// <param name="param2"></param>
+        /// <returns></returns>
         public static bool NotLike(this string param1, string param2)
         {
             return true;
@@ -341,26 +378,62 @@ namespace Dapper.Extension
         #endregion
 
         #region <,>,<=,>=,<>,=
+        /// <summary>
+        /// 大于
+        /// </summary>
+        /// <param name="param1"></param>
+        /// <param name="param2"></param>
+        /// <returns></returns>
         public static bool Gt(this ValueType param1, ValueType param2)
         {
             return true;
         }
+        /// <summary>
+        /// 大于等于
+        /// </summary>
+        /// <param name="param1"></param>
+        /// <param name="param2"></param>
+        /// <returns></returns>
         public static bool Ge(this ValueType param1, ValueType param2)
         {
             return true;
         }
+        /// <summary>
+        /// 小于
+        /// </summary>
+        /// <param name="param1"></param>
+        /// <param name="param2"></param>
+        /// <returns></returns>
         public static bool Lt(this ValueType param1, ValueType param2)
         {
             return true;
         }
+        /// <summary>
+        /// 小于等于
+        /// </summary>
+        /// <param name="param1"></param>
+        /// <param name="param2"></param>
+        /// <returns></returns>
         public static bool Le(this ValueType param1, ValueType param2)
         {
             return true;
         }
+        /// <summary>
+        /// 不等于
+        /// </summary>
+        /// <param name="param1"></param>
+        /// <param name="param2"></param>
+        /// <returns></returns>
         public static bool Ne(this ValueType param1, ValueType param2)
         {
             return true;
         }
+        /// <summary>
+        /// 等于
+        /// </summary>
+        /// <param name="param1"></param>
+        /// <param name="param2"></param>
+        /// <returns></returns>
         public static bool Eq(this ValueType param1, ValueType param2)
         {
             return true;
@@ -368,10 +441,20 @@ namespace Dapper.Extension
         #endregion
 
         #region IsNull
+        /// <summary>
+        /// Is Null查询
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static bool IsNull(this ValueType value)
         {
             return true;
         }
+        /// <summary>
+        /// Is Not Null查询
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static bool IsNotNull(this ValueType value)
         {
             return true;
@@ -379,10 +462,24 @@ namespace Dapper.Extension
         #endregion
 
         #region Between
+        /// <summary>
+        /// Between查询
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <returns></returns>
         public static bool Between(this ValueType value, ValueType min, ValueType max)
         {
             return true;
         }
+        /// <summary>
+        /// Not Between
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <returns></returns>
         public static bool NotBetween(this ValueType value, ValueType min, ValueType max)
         {
             return true;
@@ -437,7 +534,7 @@ namespace Dapper.Extension
                 case "NotBetween":
                     name = "NOT BETWEEN";
                     break;
-                default: throw new Exception("Undefined Identifier Exception");
+                default: throw new Exception("该操作符未定义");
             }
             return name;
         }
@@ -753,4 +850,5 @@ namespace Dapper.Extension
         #endregion
     }
     #endregion
+
 }

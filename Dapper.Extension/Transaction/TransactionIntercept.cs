@@ -7,8 +7,11 @@ namespace Dapper.Extension
     /// 事物拦截器
     /// 
     /// 事务传播行为：
+    ///    
     ///     1.如果ISevice的实现类中的Session未初始化则将其初始化
-    ///     2.只有virtua方法会被拦截，virtual方法之间不能互相调用</summary>
+    ///     
+    ///     2.只有virtua方法会被拦截，同一个目标对象的virtua方法之间互调只使用一个事物
+    ///     
     public class TransactionIntercept : IInterceptor
     {
         /// <summary>

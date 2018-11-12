@@ -36,10 +36,11 @@ namespace Dapper.Extension
                 var fields = model.GetType().GetProperties();
                 foreach (var item in fields)
                 {
-                    buffer.AppendFormat("SET @{0} = '{1}';\n", item.Name,item.GetValue(model));
+                    var value = item.GetValue(model);
+                    buffer.AppendFormat("SET @{0} = {1};\n", item.Name, value == null ? "NULL" : "'" + value.ToString() + "'");
                 }
             }
-            else if(Param is  IEquatable<IModel>)
+            else if(Param is IEnumerable<IModel>)
             {
                 var list = Param as IEnumerable<IModel>;
                 foreach (var item in list)

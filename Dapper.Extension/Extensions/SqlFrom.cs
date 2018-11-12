@@ -458,7 +458,7 @@ namespace Dapper.Extension
         }
         #endregion
 
-        #region Prop
+        #region Props
         /// <summary>
         /// 查询参数
         /// </summary>
@@ -614,7 +614,10 @@ namespace Dapper.Extension
                 _orderBy = new StringBuilder();
                 _orderBy.Append(orderBy);
             }
-            _orderBy.AppendFormat(",{0}", orderBy);
+            else
+            {
+                _orderBy.AppendFormat(",{0}", orderBy);
+            }
             return this;
         }
         #endregion
