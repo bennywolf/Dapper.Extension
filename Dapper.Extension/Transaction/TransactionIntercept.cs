@@ -27,10 +27,13 @@ namespace Dapper.Extension
                 {
                     var dao = target as SeviceBase;
                     //事务传播行为，如果同一个Service则使用同一个事物
-                    session = dao.Session == null ? SessionFactory.GetSession(true) : null;
-                    session.Open(false);
-                    //注入事务
-                    dao.Session = session;
+                    if (dao.Session==null)
+                    {
+                        //注入事务
+                        session = SessionFactory.GetSession(true) ;
+                        dao.Session = session;
+                        session.Open(false);
+                    }
                 }
                 #endregion
 
@@ -39,7 +42,10 @@ namespace Dapper.Extension
                 #endregion
 
                 #region 提交事物
-                session.Commit();
+                if (session!=null)
+                {
+                    session.Commit();
+                }
                 #endregion
             }
             catch (Exception e)

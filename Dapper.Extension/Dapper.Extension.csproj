@@ -90,7 +90,7 @@
     <Compile Include="Container\AppContainer.cs" />
     <Compile Include="Transaction\DbSession.cs" />
     <Compile Include="Transaction\ISession.cs" />
-    <Compile Include="Transaction\ISevice.cs" />
+    <Compile Include="Transaction\SeviceBase.cs" />
     <Compile Include="Transaction\SessionFactory.cs" />
     <Compile Include="Transaction\DbCommand.cs" />
     <Compile Include="Transaction\SessionProxy.cs" />
