@@ -38,6 +38,10 @@ namespace Dapper.Extension
         #endregion
 
         #region Method
+        /// <summary>
+        /// 构建表达式参数
+        /// </summary>
+        /// <param name="value"></param>
         private void SetValue(object value)
         {
             var key = string.Format("@{0}_{1}", Names.Pop().Replace("(", "_").Replace(")", ""), Params.Count);
@@ -48,6 +52,11 @@ namespace Dapper.Extension
             SqlExpression.Append(key);
             Params.Add(key, value);
         }
+        /// <summary>
+        /// 构建表达式字段
+        /// </summary>
+        /// <param name="columnName"></param>
+        /// <param name="memberName"></param>
         private void SetName(string columnName, string memberName)
         {
             SqlExpression.Append(columnName);
