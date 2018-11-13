@@ -1,4 +1,4 @@
-﻿using Dapper.Extension.Exceptions;
+﻿using Dapper.Extension;
 using Dapper.Extension.Model;
 using System;
 using System.Collections.Generic;

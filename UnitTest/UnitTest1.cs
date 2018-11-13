@@ -20,7 +20,12 @@ namespace UnitTest
         [TestMethod]
         public void TestMethod1()
         {
-            RandUtil.NextDouble(8.23,8.88);
+            for (int i = 0; i < 100000; i++)
+            {
+                var rand = RandUtil.NextDouble(8.23,9.55);
+                Debug.WriteLine(rand);
+            }
+           
         }
 
 

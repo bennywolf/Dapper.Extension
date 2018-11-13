@@ -84,9 +84,9 @@
     <Compile Include="Database\TudentModel.cs">
       <DependentUpon>MVC_Model.tt</DependentUpon>
     </Compile>
-    <Compile Include="Exceptions\SessionException.cs" />
-    <Compile Include="Extension\SqlFrom.cs" />
+    <Compile Include="Exception\SessionException.cs" />
     <Compile Include="Extension\SqlBuilder.cs" />
+    <Compile Include="Extension\SqlFrom.cs" />
     <Compile Include="Container\AppContainer.cs" />
     <Compile Include="Transaction\DbSession.cs" />
     <Compile Include="Transaction\ISession.cs" />

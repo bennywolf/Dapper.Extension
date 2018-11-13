@@ -67,14 +67,12 @@ namespace Common.Library.Data
         public static double NextDouble(double min, double max)
         {
             var rand = new Random();
-            var smin = min.ToString().Replace(".","");
-            var smax = max.ToString().Replace(".", "");
-            var list = new List<int>();
-            for (int i = 0; i < smin.Length; i++)
-            {
-                list.Add(rand.Next(smin[i],(i>smax.Length?9:smax[i])));
-            }
-            return new Random().NextDouble();
+            var inum = rand.Next(int.Parse(min.ToString().Replace(".", "")), int.Parse(max.ToString().Replace(".", "")));
+            var dnum = double.Parse("0." + inum);
+            var imin = (int)Math.Log10(min)+1;
+            var imax = (int)Math.Log10(max)+1;
+            var rate = rand.Next(imin,imax);
+            return dnum * Math.Pow(10, rate);
         }
     }
 }
