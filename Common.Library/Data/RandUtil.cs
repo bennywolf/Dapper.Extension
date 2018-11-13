@@ -49,14 +49,32 @@ namespace Common.Library.Data
             return string.Format("{0}{1}{2}", prefix, string.IsNullOrEmpty(prefix) ? "" : "-", s2);
         }
         /// <summary>
-        /// 生成指定范围的随机数字
+        /// 生成指定范围的随机数字正整数
         /// </summary>
         /// <param name="min">最小值</param>
         /// <param name="max">最大值,不可取</param>
         /// <returns></returns>
-        public static int GetNum(int min,int max)
+        public static int Next(int min,int max)
         {
             return new Random().Next(min, max);
+        }
+        /// <summary>
+        /// 生成指定范围的小数
+        /// </summary>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <returns></returns>
+        public static double NextDouble(double min, double max)
+        {
+            var rand = new Random();
+            var smin = min.ToString().Replace(".","");
+            var smax = max.ToString().Replace(".", "");
+            var list = new List<int>();
+            for (int i = 0; i < smin.Length; i++)
+            {
+                list.Add(rand.Next(smin[i],(i>smax.Length?9:smax[i])));
+            }
+            return new Random().NextDouble();
         }
     }
 }
