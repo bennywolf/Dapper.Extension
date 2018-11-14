@@ -1,4 +1,7 @@
 <style type="text/css">
+	body{
+		font-size: 16px;
+	}
     /* Border styles */
     #table-4 thead, #table-4 tr {
         border-top-width: 1px;
@@ -14,7 +17,7 @@
 
         /* Padding and font style */
         #table-4 td, #table-4 th {
-            padding: 5px 10px;
+            padding: 10px 15px;
             font-size: 12px;
             font-family: Verdana;
             color: rgb(95, 74, 121);
@@ -29,46 +32,99 @@
             background: #FFF
         }
 </style>
-	<table id="table-4">   
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+	<table id="table-4" align="center">   
 		<thead>
 		 <tr>
-			<th>Name</th>
-			<th>City</th>
-			<th>Phone</th>
+			<th colspan="8">student[学生表]</th>
+		 </tr>
+		 <tr>
+			<th>DbName</th>
+			<th>C#Name</th>
+			<th>Default</th>
+			<th>IsNullable</th>
+			<th>IsNull</th>
+			<th>DbType</th>
+			<th>C#Type</th>
+			<th>Comment</th>
+			<th>Identity</th>
 		</tr>
 		</thead>
-		<tbody>
+		<tbody align="center">
 					<tr>
-				<td>Albert Ellis</td>
-				<td>New York</td>
-				<td>+1 718 000000</td>
+				<td>ID</td>
+				<td>Id</td>
+				<td>null</td>
+				<td>NO</td>
+				<td>int(11)</td>
+				<td>int</td>
+				<td>int?</td>
+				<td></td>
+				<td>true</td>
 			</tr>
 					<tr>
-				<td>Albert Ellis</td>
-				<td>New York</td>
-				<td>+1 718 000000</td>
+				<td>NAME</td>
+				<td>Name</td>
+				<td>null</td>
+				<td>YES</td>
+				<td>varchar(50)</td>
+				<td>varchar</td>
+				<td>string</td>
+				<td>姓名</td>
+				<td>false</td>
 			</tr>
 					<tr>
-				<td>Albert Ellis</td>
-				<td>New York</td>
-				<td>+1 718 000000</td>
+				<td>AGE</td>
+				<td>Age</td>
+				<td>null</td>
+				<td>YES</td>
+				<td>int(11)</td>
+				<td>int</td>
+				<td>int?</td>
+				<td>年龄</td>
+				<td>false</td>
 			</tr>
 					<tr>
-				<td>Albert Ellis</td>
-				<td>New York</td>
-				<td>+1 718 000000</td>
+				<td>MIN_AGE</td>
+				<td>MinAge</td>
+				<td>null</td>
+				<td>YES</td>
+				<td>int(11)</td>
+				<td>int</td>
+				<td>int?</td>
+				<td>最小年龄</td>
+				<td>false</td>
 			</tr>
 					<tr>
-				<td>Albert Ellis</td>
-				<td>New York</td>
-				<td>+1 718 000000</td>
+				<td>CREATE_TIME</td>
+				<td>CreateTime</td>
+				<td>null</td>
+				<td>YES</td>
+				<td>datetime</td>
+				<td>datetime</td>
+				<td>DateTime?</td>
+				<td>创建时间</td>
+				<td>false</td>
 			</tr>
 					<tr>
-				<td>Albert Ellis</td>
-				<td>New York</td>
-				<td>+1 718 000000</td>
+				<td>VERSION</td>
+				<td>Version</td>
+				<td>null</td>
+				<td>YES</td>
+				<td>varchar(100)</td>
+				<td>varchar</td>
+				<td>string</td>
+				<td>数据版本</td>
+				<td>false</td>
 			</tr>
 				</tbody>
 	</table>
-	
-
+</body>
+</html>

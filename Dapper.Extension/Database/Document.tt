@@ -20,6 +20,9 @@
 #>
 <#manager.StartNewFile(Database.Name+".html");#>
 <style type="text/css">
+	body{
+		font-size: 16px;
+	}
     /* Border styles */
     #table-4 thead, #table-4 tr {
         border-top-width: 1px;
@@ -35,7 +38,7 @@
 
         /* Padding and font style */
         #table-4 td, #table-4 th {
-            padding: 5px 10px;
+            padding: 10px 15px;
             font-size: 12px;
             font-family: Verdana;
             color: rgb(95, 74, 121);
@@ -50,26 +53,49 @@
             background: #FFF
         }
 </style>
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
 <#foreach(var table in tables){#>
-	<table id="table-4">   
+	<table id="table-4" align="center">   
 		<thead>
 		 <tr>
-			<th>Name</th>
-			<th>City</th>
-			<th>Phone</th>
+			<th colspan="8"><#=table.TableName#>[<#=table.TableComment#>]</th>
+		 </tr>
+		 <tr>
+			<th>DbName</th>
+			<th>C#Name</th>
+			<th>Default</th>
+			<th>IsNullable</th>
+			<th>IsNull</th>
+			<th>DbType</th>
+			<th>C#Type</th>
+			<th>Comment</th>
+			<th>Identity</th>
 		</tr>
 		</thead>
-		<tbody>
+		<tbody align="center">
 		<#foreach(var column in table.Columns){#>
 			<tr>
-				<td>Albert Ellis</td>
-				<td>New York</td>
-				<td>+1 718 000000</td>
+				<td><#=column.ColumnName??""#></td>
+				<td><#=Utils.Pascal(column.ColumnName)#></td>
+				<td><#=column.ColumnDefault??"null"#></td>
+				<td><#=column.IsNullable??""#></td>
+				<td><#=column.ColumnType??""#></td>
+				<td><#=column.DataType??""#></td>
+				<td><#=Utils.GetTypeName(column.DataType)#></td>
+				<td><#=column.ColumnComment??""#></td>
+				<td><#=string.IsNullOrEmpty(column.Extra)?"false":"true"#></td>
 			</tr>
 		<#}#>
 		</tbody>
 	</table>
-	
-
 <#}#>
+</body>
+</html>
 <#manager.EndBlock();manager.Process(true);#>

@@ -5,7 +5,7 @@ namespace Dapper.Extension.Model
 {
     /// <summary>
     /// BASE TABLE
-	/// 更新时间：2018-11-13 14:18:02
+	/// 更新时间：2018-11-14 11:20:16
     /// </summary>
     [Table("student")]
 	public class STUDENT : IModel

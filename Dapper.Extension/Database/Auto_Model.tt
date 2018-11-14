@@ -35,7 +35,7 @@ namespace Dapper.Extension.Model
 <#foreach(var column in table.Columns){#>
         /// <summary>
         /// <#=column.ColumnComment#>
-        /// Type:<#=column.ColumnType#> IsNull:<#=column.IsNullable#> Default:<#=column.ColumnDefault==null?"null":column.ColumnDefault#>
+        /// Type:<#=column.ColumnType#> IsNull:<#=column.IsNullable#> Default:<#=column.ColumnDefault??"null"#>
         /// </summary>
         [Column("<#=column.ColumnName#>",<#=string.IsNullOrEmpty(column.Extra)?"false":"true"#>)]
         public <#=Utils.GetTypeName(column.DataType)#> <#=Utils.Pascal(column.ColumnName)#> { get; set; }
