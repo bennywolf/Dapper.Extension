@@ -158,6 +158,10 @@ namespace Common.Library.File
             for (int i = startRow + 1; i < sheet.PhysicalNumberOfRows; i++)
             {
                 var row = table.NewRow();
+                if (sheet.GetRow(i) == null || sheet.GetRow(i).Cells.FindAll(f => f.CellType == CellType.String).All(c => string.IsNullOrEmpty(c.StringCellValue)))
+                {
+                    continue;
+                }
                 var cells = sheet.GetRow(i).Cells;
                 foreach (var cell in cells)
                 {

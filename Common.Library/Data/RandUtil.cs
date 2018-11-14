@@ -32,16 +32,17 @@ namespace Common.Library.Data
         /// </summary>
         /// <param name="count"></param>
         /// <returns></returns>
-        public static string GetAcc(int count)
+        public static string GetAccount(int count)
         {
             var guids = new List<char>();
             var rand = new Random();
-            for (int i = 0; i < count; i++)
+            for (int i = 0; guids.Count < count; i++)
             {
-                var guid = Guid.NewGuid().ToString().ToList().FindAll(f=>char.IsNumber(f)).ToList();
-                guids.Add(guid[rand.Next(1,9999) % guid.Count]);
+                var guid = Guid.NewGuid().ToString().ToList().FindAll(f => char.IsNumber(f)).ToList();
+                var rangeCount = guid.Count < (count - guids.Count) ? guid.Count : (count - guids.Count);
+                guids.AddRange(guid.GetRange(0, rangeCount));
             }
-            return string.Join("",guids);
+            return string.Join("", guids);
         }
         public static string GetMchid(string prefix = "")
         {
