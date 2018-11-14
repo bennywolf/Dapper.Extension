@@ -1,0 +1,75 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Xml" #>
+<#@ assembly name="System.Xml.Linq" #>
+<#@ assembly name="System.Data" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Web" #>
+
+
+
+
+<#@include file="$(SolutionDir)\Dapper.Extension\Database\Helper\FileManager.ttinclude"#>
+<#@include file="$(SolutionDir)\Dapper.Extension\Database\Helper\Database.ttinclude"#>
+<# 
+	var manager = Manager.Create(Host, GenerationEnvironment);
+	var tables = Database.Build("server=127.0.0.1;user id=root;password=1024;database=test;pooling=True;minpoolsize=1;maxpoolsize=10;connectiontimeout=180;");
+#>
+<#manager.StartNewFile(Database.Name+".html");#>
+<style type="text/css">
+    /* Border styles */
+    #table-4 thead, #table-4 tr {
+        border-top-width: 1px;
+        border-top-style: solid;
+        border-top-color: rgb(211, 202, 221);
+    }
+
+    #table-4 {
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
+        border-bottom-color: rgb(211, 202, 221);
+    }
+
+        /* Padding and font style */
+        #table-4 td, #table-4 th {
+            padding: 5px 10px;
+            font-size: 12px;
+            font-family: Verdana;
+            color: rgb(95, 74, 121);
+        }
+
+        /* Alternating background colors */
+        #table-4 tr:nth-child(even) {
+            background: rgb(223, 216, 232)
+        }
+
+        #table-4 tr:nth-child(odd) {
+            background: #FFF
+        }
+</style>
+<#foreach(var table in tables){#>
+	<table id="table-4">   
+		<thead>
+		 <tr>
+			<th>Name</th>
+			<th>City</th>
+			<th>Phone</th>
+		</tr>
+		</thead>
+		<tbody>
+		<#foreach(var column in table.Columns){#>
+			<tr>
+				<td>Albert Ellis</td>
+				<td>New York</td>
+				<td>+1 718 000000</td>
+			</tr>
+		<#}#>
+		</tbody>
+	</table>
+	
+
+<#}#>
+<#manager.EndBlock();manager.Process(true);#>

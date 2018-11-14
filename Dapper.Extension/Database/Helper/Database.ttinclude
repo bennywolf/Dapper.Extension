@@ -10,16 +10,16 @@
 #>
 <#+
 
-// 获取数据库连接
-// 
 
     public static class Database
     {
+		public static string Name { get; set; }
         public static IEnumerable<TableInfo> Build(string connectionString)
         {
             DefaultTypeMap.MatchNamesWithUnderscores = true;
             var connection = new MySql.Data.MySqlClient.MySqlConnection(connectionString);
             var database = connection.Database;
+			Name=database;
             var tablesql = string.Format("SELECT TABLE_NAME,TABLE_TYPE,TABLE_COMMENT from INFORmation_schema.TABLES WHERE TABLE_SCHEMA='{0}'", database);
             var tables = connection.Query<TableInfo>(tablesql);
             var columnsql = string.Format("SELECT TABLE_NAME,COLUMN_NAME,COLUMN_COMMENT,COLUMN_DEFAULT,IS_NULLABLE,DATA_TYPE,COLUMN_TYPE,EXTRA FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='{0}'", database);

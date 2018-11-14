@@ -824,7 +824,7 @@ namespace Dapper.Extension
             return Cache(typeof(T)).Columns.Find(f => f.FieldName == fieldName).Identity;
         }
         /// <summary>
-        /// 获取标识列的列名
+        /// 获取标识列的属性名
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>

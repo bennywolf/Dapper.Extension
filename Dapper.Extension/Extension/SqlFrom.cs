@@ -234,6 +234,39 @@ namespace Dapper.Extension
 
             return row;
         }
+        /// <summary>
+        /// 插入数据，并更新对象的Idenity属性
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public int InsertById(T entity)
+        {
+            #region 如果对象为null，则不做更新
+            if (entity == null)
+            {
+                return 0;
+            }
+            #endregion
+
+            #region 构建InsertSql
+            var colums = TypeMapper.GetColumnNames<T>();
+            var fields = TypeMapper.GetFieldNames<T>();
+            InsertSql.AppendFormat("INSERT INTO {0} ({1}) VALUES ({2})", TypeMapper.GetTableName<T>(), string.Join(",", colums), string.Join(",", fields.Select(c => c = '@' + c).ToArray()));
+            #endregion
+
+            #region 执行Dapper
+            var row = Session.Execute(InsertSql.ToString(), entity, CommandType.Text);
+            var identity = Session.Query<int>("SELECT @@IDENTITY").SingleOrDefault();
+            entity.GetType().GetProperty(TypeMapper.GetIdentityFieldName<T>()).SetValue(entity, identity);
+            #endregion
+
+            return row;
+        }
+        /// <summary>
+        /// 批量插入
+        /// </summary>
+        /// <param name="entitys"></param>
+        /// <returns></returns>
         public int Insert(IEnumerable<T> entitys)
         {
             #region 如果对象为null，则不做更新

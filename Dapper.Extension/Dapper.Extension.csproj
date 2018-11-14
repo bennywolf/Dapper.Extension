@@ -66,6 +66,11 @@
   <ItemGroup>
     <Compile Include="Attribute\ColumnAttribute.cs" />
     <Compile Include="Attribute\TableAttribute.cs" />
+    <Compile Include="Database\Document.cs">
+      <DependentUpon>Document.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Database\Model\IModel.cs" />
     <Compile Include="Database\MVC_Model.cs">
       <AutoGen>True</AutoGen>
@@ -101,6 +106,13 @@
     <None Include="app.config" />
     <None Include="Database\Helper\Database.ttinclude" />
     <None Include="Database\Helper\FileManager.ttinclude" />
+    <Content Include="Database\Document.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Document.cs</LastGenOutput>
+    </Content>
+    <Content Include="Database\test.html">
+      <DependentUpon>Document.tt</DependentUpon>
+    </Content>
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -20,11 +20,13 @@ namespace UnitTest
         [TestMethod]
         public void TestMethod1()
         {
-            for (int i = 0; i < 100000; i++)
+            var session = SessionFactory.GetSession(true);
+            var entity = new STUDENT()
             {
-                var rand = RandUtil.NextDouble(8.23,9.55);
-                Debug.WriteLine(rand);
-            }
+                Name = "测试",
+            };
+            session.From<STUDENT>().InsertById(entity);
+
            
         }
 
