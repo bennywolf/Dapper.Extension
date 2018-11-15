@@ -189,33 +189,6 @@ namespace Dapper.Extension
 
         #region Utils
         /// <summary>
-        /// 获取字段名
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="expression"></param>
-        /// <returns></returns>
-        public static string GetColumnName(Type type, Expression expression)
-        {
-            var name = string.Empty;
-            if (expression is LambdaExpression)
-            {
-                expression = (expression as LambdaExpression).Body;
-            }
-            if (expression is MemberExpression)
-            {
-                name = (expression as MemberExpression).Member.Name;
-            }
-            else if (expression is UnaryExpression)
-            {
-                name = ((expression as UnaryExpression).Operand as MemberExpression).Member.Name;
-            }
-            else
-            {
-                throw new Exception("Not Cast MemberExpression");
-            }
-            return TypeMapper.GetColumnName(type, name);
-        }
-        /// <summary>
         /// 获取成员名称
         /// </summary>
         /// <param name="type"></param>
@@ -248,6 +221,33 @@ namespace Dapper.Extension
         /// <typeparam name="T"></typeparam>
         /// <param name="expression"></param>
         /// <returns></returns>
+        public static string GetColumnName(Type type, Expression expression)
+        {
+            var name = string.Empty;
+            if (expression is LambdaExpression)
+            {
+                expression = (expression as LambdaExpression).Body;
+            }
+            if (expression is MemberExpression)
+            {
+                name = (expression as MemberExpression).Member.Name;
+            }
+            else if (expression is UnaryExpression)
+            {
+                name = ((expression as UnaryExpression).Operand as MemberExpression).Member.Name;
+            }
+            else
+            {
+                throw new Exception("Not Cast MemberExpression");
+            }
+            return TypeMapper.GetColumnName(type, name);
+        }
+        /// <summary>
+        /// 获取字段名
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expression"></param>
+        /// <returns></returns>
         public static string GetColumnName<T>(Expression expression)
         {
             return GetColumnName(typeof(T), expression);
@@ -267,24 +267,6 @@ namespace Dapper.Extension
             }
             return list;
         }
-        /// <summary>
-        /// 将字段名映射成属性名（字段名+AS 属性名)
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="express"></param>
-        /// <returns></returns>
-        public static List<string> GetColumnAsFields<T>(Expression[] express)
-        {
-            var list = new List<string>();
-            foreach (var item in express)
-            {
-                var column = GetColumnName<T>(item);
-                var field = TypeMapper.GetFieldName<T>(column);
-                list.Add(string.Format("{0} AS {1}", column, field));
-            }
-            return list;
-        }
-      
         #endregion
 
         #region Class

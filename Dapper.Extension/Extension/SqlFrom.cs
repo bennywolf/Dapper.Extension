@@ -12,9 +12,10 @@ namespace Dapper.Extension
 {
     public class SqlFrom<T> where T : class, new()
     {
-        #region Construction      
+        #region Construction
+
         /// <summary>
-        /// 创建一个SQL构造器
+        /// 创建当前查询
         /// </summary>
         /// <param name="session"></param>
         public SqlFrom(ISession session)
@@ -23,11 +24,7 @@ namespace Dapper.Extension
         }
         #endregion
 
-        #region DAO.NET
-        /// <summary>
-        /// 事务会话
-        /// </summary>
-        private ISession Session { get; set; }
+        #region ADO.Net
         /// <summary>
         /// 查询数据
         /// </summary>
@@ -37,26 +34,25 @@ namespace Dapper.Extension
         {
             #region 构建QuerySql
             QuerySql.AppendFormat("SELECT {0} FROM {1}", columns, TypeMapper.GetTableName<T>());
-            if (_where != null&&_where.Length>0)
+            if (_where != null && _where.Length > 0)
             {
                 QuerySql.AppendFormat(" WHERE {0}", _where);
             }
-            if (_groupBy != null)
+            if (_groupBy != null && _groupBy.Length > 0)
             {
                 QuerySql.AppendFormat(" GROUP BY {0}", _groupBy);
             }
-            if (_having != null)
+            if (_having != null && _having.Length > 0)
             {
                 QuerySql.AppendFormat(" HAVING {0}", _having);
             }
-            if (_orderBy != null)
+            if (_orderBy != null && _orderBy.Length > 0)
             {
                 QuerySql.AppendFormat(" ORDER BY {0}", _orderBy);
             }
-            if (_top != null)
+            if (_top != null && _top.Length > 0)
             {
-                QuerySql.AppendFormat(" {0}", _top);
-
+                QuerySql.AppendFormat(" LIMIT {0}", _top);
             }
             #endregion
 
@@ -84,56 +80,25 @@ namespace Dapper.Extension
             return data;
         }
         /// <summary>
-        /// 将字段进行映射
+        /// 映射查询(column注解 As 属性名)
         /// </summary>
         /// <param name="express"></param>
         /// <returns></returns>
-        public List<T> SelectMap(params Expression<Func<T, object>>[] express)
+        public List<T> SelectMap(Expression<Func<T, object>> express)
         {
             #region 构建字段列表
-            var list = SqlVisitor.GetColumnNames<T>(express);
-
-            var columns = string.Join(",", SqlVisitor.GetColumnAsFields<T>(express));
+            var columns = new List<string>();
+            var props = express.Body.Type.GetProperties().Select(s => s.Name);
+            foreach (var item in props)
+            {
+                columns.Add(string.Format("{0} AS {1}", TypeMapper.GetColumnName(typeof(T), item), item));
+            }
             #endregion
 
             #region 执行Dapper查询
-            var data = Select(columns);
+            var data = Select(string.Join(",", columns));
             #endregion
 
-            return data;
-        }
-        /// <summary>
-        /// 分页查询
-        /// </summary>
-        /// <param name="index"></param>
-        /// <param name="size"></param>
-        /// <param name="total"></param>
-        /// <returns></returns>
-        public List<T> SkipPage(int index, int size, out int total)
-        {
-            total = Count();
-            Top(((total + size) / size) * (index - 1), size);
-            var data = Select();
-            return data;
-        }
-        /// <summary>
-        /// 分页查询
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        public List<T> SkipPage(MVCModel model)
-        {
-            var total = 0;
-            var data = new List<T>();
-            if (model.QueryAll == 1)
-            {
-                data = Select();
-            }
-            else
-            {
-                data = SkipPage(model.PageIndex, model.PageSize, out total);
-            }
-            model.TotalCount = total;
             return data;
         }
         /// <summary>
@@ -179,11 +144,11 @@ namespace Dapper.Extension
         {
             #region 构建QuerySql
             TopSql.AppendFormat("SELECT COUNT(*) FROM {0}", TypeMapper.GetTableName<T>());
-            if (_where != null&&_where.Length>0)
+            if (_where != null && _where.Length > 0)
             {
                 TopSql.AppendFormat(" WHERE {0}", _where);
             }
-            if (_top != null)
+            if (_top != null && _top.Length > 0)
             {
                 TopSql.AppendFormat(" {0}", _top);
             }
@@ -366,6 +331,7 @@ namespace Dapper.Extension
                 throw new SessionException("乐观锁：数据版本不一致");
             }
             #endregion
+
             return row;
         }
         /// <summary>
@@ -412,7 +378,7 @@ namespace Dapper.Extension
             var rows = 0;
             foreach (var item in entitys)
             {
-               var row = UpdateLock(item);
+                var row = UpdateLock(item);
                 rows += row;
             }
             #endregion
@@ -493,6 +459,10 @@ namespace Dapper.Extension
 
         #region Props
         /// <summary>
+        /// 会话事物
+        /// </summary>
+        private ISession Session { get; set; }
+        /// <summary>
         /// 查询参数
         /// </summary>
         private Dictionary<string, object> Params = new Dictionary<string, object>();
@@ -518,6 +488,41 @@ namespace Dapper.Extension
         private StringBuilder TopSql = new StringBuilder();
         #endregion
 
+        #region SipPage
+        /// <summary>
+        /// 分页查询
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="size"></param>
+        /// <param name="total"></param>
+        /// <returns></returns>
+        public SqlFrom<T> SkipPage(int index, int size, out int total)
+        {
+            total = Count();
+            Top(((total + size) / size) * (index - 1), size);
+            return this;
+        }
+        /// <summary>
+        /// MVC的扩展分页
+        /// </summary>
+        /// <param name="mvc"></param>
+        /// <returns></returns>
+        public SqlFrom<T> SkipPage(MVCModel mvc)
+        {
+            var total = 0;
+            if (mvc.QueryAll == 1)
+            {
+                return this;
+            }
+            else
+            {
+                SkipPage(mvc.PageIndex, mvc.PageSize, out total);
+            }
+            mvc.TotalCount = total;
+            return this;
+        }
+        #endregion
+
         #region Where
         private StringBuilder _where { get; set; }
         /// <summary>
@@ -527,8 +532,11 @@ namespace Dapper.Extension
         /// <returns></returns>
         public SqlFrom<T> Where(SqlQuery<T> expression)
         {
-            var build = new SqlVisitor().Build<T>(Params, expression.Build());
-            _where = new StringBuilder(build.Expression);
+            if (expression.Build().Count > 0)
+            {
+                var build = new SqlVisitor().Build<T>(Params, expression.Build());
+                _where = new StringBuilder(build.Expression);
+            }
             return this;
         }
         /// <summary>
@@ -556,7 +564,7 @@ namespace Dapper.Extension
         public SqlFrom<T> Set(string column, object value)
         {
             var key = "@" + column;
-            _set.AppendFormat("{0}=@{0}", column);
+            _set.AppendFormat("{0} = @{0}", column);
             Params.Add(key, value);
             return this;
         }
@@ -574,7 +582,7 @@ namespace Dapper.Extension
         #endregion
 
         #region Group By
-        private StringBuilder _groupBy = null;
+        private StringBuilder _groupBy { get; set; }
         public SqlFrom<T> GroupBy(params Expression<Func<T, object>>[] express)
         {
             if (_groupBy == null)
@@ -665,7 +673,7 @@ namespace Dapper.Extension
         /// <returns></returns>
         public SqlFrom<T> Top(int index, int size)
         {
-            _top = string.Format("LIMIT {0},{1}", index, size);
+            _top = string.Format("{0},{1}", index, size);
             return this;
         }
         public SqlFrom<T> Top(int size)
