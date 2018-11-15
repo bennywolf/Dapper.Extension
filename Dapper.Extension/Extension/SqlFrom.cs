@@ -488,7 +488,7 @@ namespace Dapper.Extension
         private StringBuilder TopSql = new StringBuilder();
         #endregion
 
-        #region SipPage
+        #region SkipPage
         /// <summary>
         /// 分页查询
         /// </summary>
