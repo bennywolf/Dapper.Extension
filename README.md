@@ -2,9 +2,8 @@
 
 
 
-    [TestClass]
-    public class UnitTest1
-    {
+     public class UnitTest1
+     {
         #region 创建容器
         public IContainer Container { get; set; }
         /// <summary>
@@ -103,9 +102,11 @@
                 .SkipPage(req)
                 .Select();
 
-            //多表链接
+            //多表链接:分页与查询分离
+            var total = 0;
             session.From<Student_Coures>()
                 .Where(s => s.Sid > 10)
+                .SkipPage(1,10,out total)
                 .SelectMap(s=>new//由于a.id无法映射到Id自动，通过SelectMap映射查询可以得到 a.id as id（注解+属性）
                 {
                     s.Id,
@@ -113,6 +114,7 @@
                     s.CourseNAme,
                     s.StudentName
                 });
+            //会话结束
             session.Commit();
             session.Rollback();//应该写在catch里
             session.Close();//应该写在finally里
@@ -133,5 +135,3 @@
             public string Date { get; set; }
         }
     }
-   
-
