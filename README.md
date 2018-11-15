@@ -1,19 +1,7 @@
  #Dapper.Extension
 
-using System;
-using System.Drawing;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Common.Library.File;
-using Mammothcode.Business.Services;
-using Dapper.Extension.Model;
-using Dapper.Extension;
-using Autofac;
-using Common.Library.Data;
-using System.Collections.Generic;
-using System.Data;
 
-namespace UnitTest
-{
+
     [TestClass]
     public class UnitTest1
     {
@@ -146,5 +134,4 @@ namespace UnitTest
         }
     }
    
-   
-}
+
