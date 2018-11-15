@@ -1,153 +1,150 @@
  #Dapper.Extension
 
-      由于还有工作，没有作测试，但是不会有很严重的问题，而且源码很简单，可以自行修复
-      QQ：1448376744
-      
-      简单介绍：
-      1. 本框架可以基于CodeFirst，ModelFirst开发（本人已经编写了T4自动模板，只需要修改里面的数据库连接就能自动生成模型）。
-       CodeFirst模式用于构建复杂的SQL查询，如：多表、分组，查询等。
-      
-      2. 模型字段映射规则，基于Dapper，但是本人默认开启了下划线去除匹配，即ME_NAME可以映射到，MeName,ME_ANEM,mename(不分大小写)
-      
-      3. 开发模式按照手动管理事物和利用代理管理事物，利用代理管理事物，需要在Global.asax中注册业务层，业务层需要实现
-      IService接口（IService接口中有一个Session会话对象，请不要对其实例化，改字段由事物管理器注入）事物提交原则是：
-       异常回滚，否则提交，也可以根据业务需要，手动调用Rollback，提前回滚，
-      
-      //第一种开发模式：事物交由事物管理器执行
-      [TestMethod]
-      public void TestMethod1()
-      {
-          //MVC项目启动时向容器注入Servce：Aop+Ioc
-          /*
-           * 容器功能：
-           *  1.完成业务方法事物自动提交回滚
-           *  2.全局异常拦截，日志记录事物会话SQL，参数记录等等，
-           * 事物传播行为：
-           *  1.一个Service层的所有方法在一起互调使用一个事物
-           *  2.一个Service层调用另一个Service，请手动将当前Serivce事务回话向下传递，否则将认为在新的事物中执行 
-           *  3.Service事物提交原则是如果不抛出异常则提交，也可以根据业务手动调用Session.Rollback()完成回滚
-           */
-          ServiceContainer.Builder(c =>
-          {
-              c.Register<Service>();
-              //c.Register<Service2>();//多个请这样注册
-          });
-          //从容器中解析出Service
-          var service = ServiceContainer.Resolve<Service>();
-          service.test();
-      }
-      
-      //第二种开发模式：自行编码管理事物
-      [TestMethod]
-      public void TestMethod2()
-      {
-          //设置自动提交为false
-          DbSession session = SessionFactory.GetSession(true);
-          session.From<T_MEMBER>().Insert(new T_MEMBER()
-          {
-              Balance = 20,
-              Comment = "测试手动提交",
-              CreateTime = DateTime.Now,
-              MeAge = 20,
-          });
-          //session.Commit();
-      }
-      //常用API
-      public void TestMethod3()
-      {
-          DbSession session = SessionFactory.GetSession(true);
-          //一：插入
-          session.From<T_MEMBER>().Insert(new T_MEMBER()
-          {
-              Balance = 20,
-              Comment = "测试手动提交",
-              CreateTime = DateTime.Now,
-              MeAge = 20,
-          });
-          //批量插入,即使list为null，或者Count为0也不会抛出异常
-          var list = new List<T_MEMBER>();
-          session.From<T_MEMBER>().Insert(list);
+     using System;
+using System.Drawing;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Common.Library.File;
+using Mammothcode.Business.Services;
+using Dapper.Extension.Model;
+using Dapper.Extension;
+using Autofac;
+using Common.Library.Data;
+using System.Collections.Generic;
+using System.Data;
 
-          //二：修改指定字段
-          session.From<T_MEMBER>()
-              .Set(s => s.Comment, "更新所有年龄小于30的")
-              .Where(s => s.MeAge < 30)
-              .Update();
-          //根据标识修改对象
-          var member = session.From<T_MEMBER>().Where(s => s.Id == 2).Single();
-          session.From<T_MEMBER>().Update(member);
-          //三：删除
-          session.From<T_MEMBER>().Where(s => s.MeAge == 3 && s.MeCode.Like("cc")).Delete();
-          //删除Id是1，2，3的
-          session.From<T_MEMBER>().Where(s => s.Id.In(new int[] { 1, 2, 3 })).Delete();
-          //四：查询
-          session.From<T_MEMBER>().Where(s => s.Id.In(new int[] { 1, 2, 3 })).Select();
-          //仅仅查询出MeCode
-          list = session.From<T_MEMBER>().Where(s => s.Id.In(new int[] { 1, 2, 3 })).Select(s => s.MeCode);
+namespace UnitTest
+{
+    [TestClass]
+    public class UnitTest1
+    {
+        #region 创建容器
+        public IContainer Container { get; set; }
+        /// <summary>
+        /// 启动时注册服务
+        /// </summary>
+        [TestInitialize]
+        public void Init()
+        {
+            Container = AppContainer.Builder("Mammothcode.Business");
+        }
+        [TestCleanup]
+        public void Dispose()
+        {
+            Container.Dispose();
+        }
+        /// <summary>
+        /// 解析组件
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T Resolve<T>()
+        {
+            return AppContainer.Resolve<T>();
+        }
+        #endregion
 
-          //动态Lamuda查询+分页
-          var param = new { Age="",Balnce=30};
-          var query = new SqlExpression<T_MEMBER>();
-          //左括号
-          query.Left();
-          query.And(s=>s.Balance>30&&s.MeAge>20);
-          //右括号
-          query.Right();
-          //当条件成立时执行
-          query.AndThen(param.Age!=null,s=>s.MeAge==10);
-          var total = 0;
-          list = session.From<T_MEMBER>().Where(query).SkipPage(1,2,out total);
-          //打印事物执行过程的SQL，级参数，请自行重写ToString
-          Debug.Write(session.Commands);
 
-      }
-      //多表，分组查询
-       [TestMethod]
+        [TestMethod]
         public void TestMethod1()
         {
-
+            //获取一个代理会话
             var session = SessionFactory.GetSession(true);
-            //CodeFirst
-            //select SUM(AGE) as SumAge,CR_CODE as CrCode 
-            //from student where age>20 group by CR_CODE having SUM(AGE)<40
-            var list = session.From<Student>()
-                .Where(s => s.Age > 20)
-                .GroupBy(s => s.CrCode)
-                .Having(s => s.SumAge < 40)
-                .AsSelect(s => s.SumAge, s => s.CrCode);
+            //开启事物/关闭自动提交
+            session.Open(true);
+            var row = 0;
+            //Inset
+            row = session.From<T_SYSTEM_MENUS>().Insert(new T_SYSTEM_MENUS()
+            {
+                IsChild = 1,
+                MuName = "Main",
+            });
 
-            //select a.sid as id1,b.sid as id2 a.name as StudentName,b.name as SchoolName 
-            //from student as a join school as b on a.sid=b.sid
-            var list2 = session.From<StudentJonSchool>()
-               .AsSelect(s => s.id1, s => s.id2, s => s.StudentName, s => s.SchoolName);
+            //Update:根据主键字段更新,及更新Id1==3的
+            session.From<T_SYSTEM_MENUS>().Update(new T_SYSTEM_MENUS()
+            {
+                Id = 3,
+                MuName = "Root"
+            });
+            //更新所有字节点的MuName和MuDesc为Child
+            session.From<T_SYSTEM_MENUS>()
+                .Set(s => s.MuName, "Child")
+                .Set(s => s.MuDesc, "Child")
+                .Where(s => s.IsChild == 1)
+                .Update();
 
+            //Delete:根据Id删除，及删除Id==2的
+            row = session.From<T_SYSTEM_MENUS>().Delete(new T_SYSTEM_MENUS()
+            {
+                Id = 2
+            });
+            //Delete:删除所有子节点
+            row = session.From<T_SYSTEM_MENUS>()
+                .Where(s => s.IsChild == 1)
+                .Delete();
+
+            //Select ALL:查询菜单子节点并且id在1~23之间的,按Id升序,Sort降序查第一页所有数据
+            var list = session.From<T_SYSTEM_MENUS>()
+                .Where(m => m.IsChild == 1 && m.Id.Between(1, 23) && m.MuType.In(new int[] { 1, 2, 3 }))
+                .Asc(s => s.Id)
+                .Desc(s => s.Sort)
+                .Top(0, 10)
+                .Select();
+
+            //Select Single
+            var entity = session.From<T_SYSTEM_MENUS>()
+               .Where(m => m.IsChild == 1)
+               .Asc(s => s.Id)
+               .Desc(s => s.Sort)
+               .Single();
+            
+            //dynamic Select 动态查询
+            //前台请求参数:分页
+            var req = new SystemMenusModel()
+            {
+                PageIndex = 1,
+                PageSize = 10,
+                MuName = "cc"
+            };
+            //分页查询:必须条件IsChild==1，动态条件MuName不为空则MuName必须包含cc
+            req.Query
+                .And(s => s.IsChild == 1)
+                .AndThen(req.MuName != null, s => s.MuName.Like(req.MuName));
+            list = session.From<T_SYSTEM_MENUS>()
+                .Where(req.Query)
+                .Asc(s => s.MuType)
+                .SkipPage(req)
+                .Select();
+
+            //多表链接
+            session.From<Student_Coures>()
+                .Where(s => s.Sid > 10)
+                .SelectMap(s=>new//由于a.id无法映射到Id自动，通过SelectMap映射查询可以得到 a.id as id（注解+属性）
+                {
+                    s.Id,
+                    s.Date,
+                    s.CourseNAme,
+                    s.StudentName
+                });
+            session.Commit();
+            session.Rollback();//应该写在catch里
+            session.Close();//应该写在finally里
         }
 
+        [Table("student as a join course as b on a.id=b.sid")]//灵活的完成表链接
+        public class Student_Coures
+        {
+            [Column("a.id")]
+            public int Id { get; set; }
+            [Column("b.id")]
+            public int Sid { get; set; }
+            [Column("a.name")]
+            public string StudentName { get; set; }
+            [Column("b.name")]
+            public int CourseNAme { get; set; }
+            [Column("DATE(a.createtime)")]//灵活的调用mysql函数
+            public string Date { get; set; }
+        }
     }
-    /// <summary>
-    /// 分组查询
-    /// </summary>
-    [Table("student")]//表名与类名同时，可以省略
-    public class Student
-    {
-        [Column("CR_CODE")]
-        public string CrCode { get; set; }
-        public string Name { get; set; }
-        [Column("SUM(AGE)")]//通过AsSelect 可以得到 SELECT SUM(AGE) AS SumAge,完成映射
-        public int SumAge { get; set; }
-        [Column("AGE")]//分组前AGE
-        public int Age { get; set; }
-    }
-    [Table("student as a join school as b on a.sid=b.sid")]
-    public class StudentJonSchool
-    {
-
-        [Column("a.Sid")]
-        public int id1 { get; set; }
-        [Column("b.Sid")]
-        public int id2 { get; set; }
-        [Column("a.Name")]
-        public string StudentName { get; set; }
-        [Column("b.Name")]
-        public string SchoolName { get; set; }
-    }
+   
+   
+}
